@@ -47,7 +47,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
     return recipes_cleaned
 
-def top five((user_input, df, best_num):
+def score_recipes(user_input, df, best_num):
     pass
      '''
     user_input: list of strings
