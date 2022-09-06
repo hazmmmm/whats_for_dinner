@@ -33,7 +33,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
             "Images",
         ]
 
-    rp_df = df[recipe_cols]
+    df = df[recipe_cols]
 
     # remove missing values transactions
     recipes_cleaned = df.drop_duplicates()
@@ -78,3 +78,6 @@ def score_recipes(user_input, df, best_num):
     df['score'] = df['RecipeIngredientParts'].apply(lambda x: score(x))
     df = df.sort_values(by=['score','AggregatedRating'], ascending=[False,False]).iloc[:best_num]
     return df
+
+#print(score_recipes(user_input=input("What should it include? "), df=clean_data(recipes_df),
+#best_num=(int(input("How many recipes you want? ")))))
