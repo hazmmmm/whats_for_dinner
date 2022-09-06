@@ -16,36 +16,49 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     or columns for the training set
     """
 
-    # remove useless/redundant columns
-    recipe_cols = ['RecipeId', 'Name', 'CookTime', 'PrepTime', 'TotalTime', 'Description', 'Images',\
-              'RecipeCategory', 'RecipeIngredientParts', \
-              'AggregatedRating','ReviewCount', 'Calories', 'RecipeInstructions','AuthorName']
+    # remove useless/redundant columns and reorganize
+    recipe_cols = [
+            "Name",
+            "AuthorName",
+            "AggregatedRating",
+            "ReviewCount",
+            "Description",
+            "RecipeCategory",
+            "TotalTime",
+            "CookTime",
+            "PrepTime",
+            "Calories",
+            "RecipeIngredientParts",
+            "RecipeInstructions",
+            "Images",
+        ]
 
     rp_df = df[recipe_cols]
 
     # remove missing values transactions
-    df = df.drop_duplicates()
-    rp_df.CookTime.replace(np.nan, '0M', inplace=True)
-    rp_df.AggregatedRating.replace(np.nan, 0.0, inplace=True)
-    rp_df.ReviewCount.replace(np.nan,0, inplace=True)
-    rp_df.RecipeCategory.replace(np.nan, 'Others', inplace=True)
-    rp_df.Description.replace(np.nan, 'No description', inplace=True)
-    rp_df = rp_df.dropna(subset = ['Images'])
+    recipes_cleaned = df.drop_duplicates()
+    recipes_cleaned.CookTime.replace(np.nan, "0M", inplace=True)
+    recipes_cleaned.ReviewCount.replace(np.nan, 0, inplace=True)
+    recipes_cleaned.RecipeCategory.replace(np.nan, "Others", inplace=True)
+    recipes_cleaned.Description.replace(np.nan, "No description", inplace=True)
+    recipes_cleaned = recipes_cleaned.dropna(subset=["Images"])
 
-    #time cleaning
-    rp_df['CookTime'] = rp_df['CookTime'].str.replace('PT','')
-    rp_df['PrepTime'] = rp_df['PrepTime'].str.replace('PT','')
-    rp_df['TotalTime'] = rp_df['TotalTime'].str.replace('PT','')
-
-
-    #reorganize columns
-    recipes_cleaned = rp_df.drop(columns=['RecipeId'])
-    recipes_cleaned = recipes_cleaned[['Name','AuthorName','AggregatedRating','ReviewCount','Description','RecipeCategory','TotalTime','CookTime','PrepTime','Calories','RecipeIngredientParts','RecipeInstructions','Images']]
+    
+    #remove
+    recipes_cleaned = recipes_cleaned.dropna(subset=["AggregatedRating"])
+    recipes_cleaned = recipes_cleaned[recipes_cleaned.AggregatedRating > 3]
+    
+    
+    # time cleaning
+    recipes_cleaned["CookTime"] = recipes_cleaned["CookTime"].str.replace("PT", "")
+    recipes_cleaned["PrepTime"] = recipes_cleaned["PrepTime"].str.replace("PT", "")
+    recipes_cleaned["TotalTime"] = recipes_cleaned["TotalTime"].str.replace("PT", "")
 
 
     print("\n✅ data cleaned")
 
     return recipes_cleaned
+
 
 def score_recipes(user_input, df, best_num):
     '''
