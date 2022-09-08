@@ -168,8 +168,9 @@ def get_model_version(stage="Production"):
 def save_labels(labels):
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     if labels is not None:
-        labels_path = os.path.join(LOCAL_REGISTRY_PATH, "labels", timestamp + ".npy")
+        labels_path = os.path.join(LOCAL_REGISTRY_PATH, "labels", timestamp)
     np.save(labels_path, labels)
+
 
 def load_labels():
     # get labels
@@ -178,7 +179,7 @@ def load_labels():
     labels_path = sorted(results)[-1]
     print(f"- path: {labels_path}")
 
-    labels = np.load(labels_path)
+    labels = np.load(labels_path, allow_pickle=True)
     print("\n✅ labels loaded from disk")
 
     return labels
