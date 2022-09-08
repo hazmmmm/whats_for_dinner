@@ -37,7 +37,7 @@ def preprocess_and_train():
 
     # model params
     learning_rate = 0.0001
-    patience = 5
+    patience = 9
     batch_size = 32
     epochs = 100
     # epochs = 1
@@ -136,12 +136,12 @@ def pred(pred_folder_path = None):
         predicted_probabilities = np.argmax(predicted_probabilities,axis=1)
         y_pred = [labels[k] for k in predicted_probabilities]
 
-        print("\n✅ prediction done: ", y_pred, y_pred.shape)
+        print("\n✅ prediction done: ", y_pred)
 
     return y_pred
 
 
 if __name__ == '__main__':
-    preprocess_and_train()
+    # preprocess_and_train()
+    # evaluate()
     pred()
-    evaluate()
