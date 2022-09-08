@@ -1,6 +1,5 @@
 from tokenize import String
-from whats_for_dinner.ml_logic.img_data_input_01 import create_images_df
-from whats_for_dinner.ml_logic.preprocessor_01 import create_processed_images_df, create_processed_images_df_eval
+from whats_for_dinner.ml_logic.preprocessor_01 import create_processed_images_df, create_processed_images_df_eval, create_images_df
 from whats_for_dinner.ml_logic.params_01 import LOCAL_DATA_PATH
 from whats_for_dinner.ml_logic.model_basic_01 import initialize_model, compile_model, train_model, evaluate_model
 from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version
@@ -34,12 +33,13 @@ def preprocess_and_train():
     model = initialize_model()
 
     # model params
-    learning_rate = 0.001
+    learning_rate = 0.0001
     patience = 5
     batch_size = 32
+    epochs = 50
 
     model = compile_model(model, learning_rate)
-    model, history = train_model(model, train_images, val_images, patience, batch_size)
+    model, history = train_model(model, train_images, val_images, patience, batch_size, epochs)
     metrics_accuracy = np.max(history.history['val_accuracy'])
     print(f"\n✅ trained with accuracy: {round(metrics_accuracy, 2)}")
 
