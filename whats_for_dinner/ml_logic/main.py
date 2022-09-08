@@ -28,17 +28,19 @@ def preprocess_and_train():
     # Create DataFrameIterator's for train, val and test
     train_images, val_images, test_images = create_processed_images_df(train_df, val_df, test_df)
     labels = (train_images.class_indices)
+    labels = dict((v,k) for k,v in labels.items())
     save_labels(labels)
 
     # start the model
 
-    model = initialize_model()
+    model = initialize_model(train_df)
 
     # model params
     learning_rate = 0.0001
     patience = 5
     batch_size = 32
-    epochs = 100
+    # epochs = 100
+    epochs = 1
 
     model = compile_model(model, learning_rate)
     model, history = train_model(model, train_images, val_images, patience, batch_size, epochs)
@@ -96,7 +98,7 @@ def evaluate():
     return metrics_accuracy
 
 
-def pred(pred_folder_path):
+def pred(pred_folder_path = None):
     """
     Make a prediction using the latest trained model
     """
@@ -107,20 +109,33 @@ def pred(pred_folder_path):
 
     if pred_folder_path is None:
 
-        pred_folder_path = '../raw_data/fruits_and_vegetables_image_recognition_dataset/pred'
+        pred_folder_path = '../../raw_data/fruits_and_vegetables_image_recognition_dataset/pred'
 
     pred_df = create_pred_images_df(pred_folder_path)
     pred_images = create_processed_images_df_pred(pred_df)
 
     labels = load_labels()
-    labels = dict((v,k) for k,v in labels.items())
-
+    print(labels)
+    print(type(labels))
     model = load_model()
 
     predicted_probabilities = model.predict(pred_images)
-    predicted_probabilities = np.argmax(predicted_probabilities,axis=1)
+    if len(predicted_probabilities) == 1:
+        print("Prediction done on one input.")
+        print(predicted_probabilities)
+        print(type(predicted_probabilities))
+        predicted_probabilities = np.argmax(predicted_probabilities)
+    else:
+        print(f"Prediction done on {len(predicted_probabilities)} inputs.")
+        print(predicted_probabilities)
+        print(type(predicted_probabilities))
+    y_pred = labels[predicted_probabilities]
+        # predicted_probabilities = np.argmax(predicted_probabilities,axis=1)
+        # y_pred = [labels[k] for k in predicted_probabilities]
 
-    y_pred = [labels[k] for k in predicted_probabilities]
+    print(labels)
+    print(type(labels))
+
 
     print("\n✅ prediction done: ", y_pred, y_pred.shape)
 
@@ -128,6 +143,6 @@ def pred(pred_folder_path):
 
 
 if __name__ == '__main__':
-    preprocess_and_train()
-    # pred()
+    # preprocess_and_train()
+    pred()
     # evaluate()
