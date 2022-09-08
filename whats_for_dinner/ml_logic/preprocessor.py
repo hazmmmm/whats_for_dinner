@@ -110,16 +110,8 @@ def create_processed_images_df_eval(eval_df):
         color_mode='rgb',
         class_mode='categorical',
         batch_size=32,
-        shuffle=True,
-        seed=0,
-        rotation_range=20,
-        zoom_range=0.05,
-        width_shift_range=0.1,
-        height_shift_range=0.1,
-        shear_range=0.1,
-        horizontal_flip=True,
-        fill_mode="nearest"
-    )
+        shuffle=False
+)
     return eval_images
 
 def create_processed_images_df_pred(pred_df):

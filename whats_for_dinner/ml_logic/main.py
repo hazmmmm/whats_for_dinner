@@ -39,8 +39,8 @@ def preprocess_and_train():
     learning_rate = 0.0001
     patience = 5
     batch_size = 32
-    # epochs = 100
-    epochs = 1
+    epochs = 100
+    # epochs = 1
 
     model = compile_model(model, learning_rate)
     model, history = train_model(model, train_images, val_images, patience, batch_size, epochs)
@@ -71,7 +71,7 @@ def evaluate():
     print("\n⭐️ use case: evaluate")
 
     # load new data
-    new_data_path = ""
+    new_data_path = os.path.join(LOCAL_DATA_PATH, "eval")
     #new_data =
 
     if new_data_path is None:
@@ -83,8 +83,8 @@ def evaluate():
 
     model = load_model()
 
-    metrics_dict = evaluate_model(model, eval_images)
-    metrics_accuracy = metrics_dict["val_accuracy"]
+    metrics = evaluate_model(model, eval_images)
+    metrics_accuracy = metrics[1]
 
     # save evaluation
     params = dict(
@@ -93,7 +93,7 @@ def evaluate():
         context="evaluate",
         )
 
-    save_model(params=params, metrics=dict(val_accuracy=metrics_accuracy))
+    # save_model(params=params, metrics=dict(val_accuracy=metrics_accuracy))
 
     return metrics_accuracy
 
@@ -115,34 +115,33 @@ def pred(pred_folder_path = None):
     pred_images = create_processed_images_df_pred(pred_df)
 
     labels = load_labels()
-    print(labels)
+    labels = dict(enumerate(labels.flatten()))
+    labels = labels[0]
+    print("Changed labels into dict")
     print(type(labels))
+
     model = load_model()
 
     predicted_probabilities = model.predict(pred_images)
+
+
+
     if len(predicted_probabilities) == 1:
         print("Prediction done on one input.")
-        print(predicted_probabilities)
-        print(type(predicted_probabilities))
-        predicted_probabilities = np.argmax(predicted_probabilities)
+        predicted_probabilities = np.argmax(predicted_probabilities,axis=1)[0]
+        y_pred = labels[predicted_probabilities]
+        print("\n✅ prediction done: ", y_pred)
     else:
         print(f"Prediction done on {len(predicted_probabilities)} inputs.")
-        print(predicted_probabilities)
-        print(type(predicted_probabilities))
-    y_pred = labels[predicted_probabilities]
-        # predicted_probabilities = np.argmax(predicted_probabilities,axis=1)
-        # y_pred = [labels[k] for k in predicted_probabilities]
+        predicted_probabilities = np.argmax(predicted_probabilities,axis=1)
+        y_pred = [labels[k] for k in predicted_probabilities]
 
-    print(labels)
-    print(type(labels))
-
-
-    print("\n✅ prediction done: ", y_pred, y_pred.shape)
+        print("\n✅ prediction done: ", y_pred, y_pred.shape)
 
     return y_pred
 
 
 if __name__ == '__main__':
-    # preprocess_and_train()
+    preprocess_and_train()
     pred()
-    # evaluate()
+    evaluate()
