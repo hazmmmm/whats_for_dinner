@@ -1,4 +1,4 @@
-from whats_for_dinner.ml_logic.params_01 import LOCAL_REGISTRY_PATH
+from whats_for_dinner.ml_logic.params import LOCAL_REGISTRY_PATH
 
 # import mlflow
 # from mlflow.tracking import MlflowClient
@@ -7,6 +7,7 @@ import glob
 import os
 import time
 import pickle
+import numpy as np
 
 from colorama import Fore, Style
 
@@ -86,36 +87,36 @@ def load_model(save_copy_locally=False) -> Model:
     """
     load the latest saved model, return None if no model found
     """
-    if os.environ.get("MODEL_TARGET") == "mlflow":
-        stage = "Production"
+    # if os.environ.get("MODEL_TARGET") == "mlflow":
+    #     stage = "Production"
 
-        print(Fore.BLUE + f"\nLoad model {stage} stage from mlflow..." + Style.RESET_ALL)
+    #     print(Fore.BLUE + f"\nLoad model {stage} stage from mlflow..." + Style.RESET_ALL)
 
-        # load model from mlflow
-        mlflow.set_tracking_uri(os.environ.get("MLFLOW_TRACKING_URI"))
+    #     # load model from mlflow
+    #     mlflow.set_tracking_uri(os.environ.get("MLFLOW_TRACKING_URI"))
 
-        mlflow_model_name = os.environ.get("MLFLOW_MODEL_NAME")
+    #     mlflow_model_name = os.environ.get("MLFLOW_MODEL_NAME")
 
-        model_uri = f"models:/{mlflow_model_name}/{stage}"
-        print(f"- uri: {model_uri}")
+    #     model_uri = f"models:/{mlflow_model_name}/{stage}"
+    #     print(f"- uri: {model_uri}")
 
-        try:
-            model = mlflow.keras.load_model(model_uri=model_uri)
-            print("\n✅ model loaded from mlflow")
-        except:
-            print(f"\n❌ no model in stage {stage} on mlflow")
-            return None
+    #     try:
+    #         model = mlflow.keras.load_model(model_uri=model_uri)
+    #         print("\n✅ model loaded from mlflow")
+    #     except:
+    #         print(f"\n❌ no model in stage {stage} on mlflow")
+    #         return None
 
-        if save_copy_locally:
-            from pathlib import Path
+    #     if save_copy_locally:
+    #         from pathlib import Path
 
-            # Create the LOCAL_REGISTRY_PATH directory if it does exist
-            Path(LOCAL_REGISTRY_PATH).mkdir(parents=True, exist_ok=True)
-            timestamp = time.strftime("%Y%m%d-%H%M%S")
-            model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp)
-            model.save(model_path)
+    #         # Create the LOCAL_REGISTRY_PATH directory if it does exist
+    #         Path(LOCAL_REGISTRY_PATH).mkdir(parents=True, exist_ok=True)
+    #         timestamp = time.strftime("%Y%m%d-%H%M%S")
+    #         model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp)
+    #         model.save(model_path)
 
-        return model
+    #     return model
 
     print(Fore.BLUE + "\nLoad model from local disk..." + Style.RESET_ALL)
 
@@ -141,25 +142,43 @@ def get_model_version(stage="Production"):
     - stages: "None", "Production", "Staging", "Archived"
     """
 
-    if os.environ.get("MODEL_TARGET") == "mlflow":
+    # if os.environ.get("MODEL_TARGET") == "mlflow":
 
-        mlflow.set_tracking_uri(os.environ.get("MLFLOW_TRACKING_URI"))
+    #     mlflow.set_tracking_uri(os.environ.get("MLFLOW_TRACKING_URI"))
 
-        mlflow_model_name = os.environ.get("MLFLOW_MODEL_NAME")
+    #     mlflow_model_name = os.environ.get("MLFLOW_MODEL_NAME")
 
-        client = MlflowClient()
+    #     client = MlflowClient()
 
-        try:
-            version = client.get_latest_versions(name=mlflow_model_name, stages=[stage])
-        except:
-            return None
+    #     try:
+    #         version = client.get_latest_versions(name=mlflow_model_name, stages=[stage])
+    #     except:
+    #         return None
 
-        # check whether a version of the model exists in the given stage
-        if not version:
-            return None
+    #     # check whether a version of the model exists in the given stage
+    #     if not version:
+    #         return None
 
-        return int(version[0].version)
+    #     return int(version[0].version)
 
     # model version not handled
 
     return None
+
+def save_labels(labels):
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    if labels is not None:
+        labels_path = os.path.join(LOCAL_REGISTRY_PATH, "labels", timestamp + ".npy")
+    np.save(labels_path, labels)
+
+def load_labels():
+    # get labels
+    label_directory = os.path.join(LOCAL_REGISTRY_PATH, "labels")
+    results = glob.glob(f"{label_directory}/*")
+    labels_path = sorted(results)[-1]
+    print(f"- path: {labels_path}")
+
+    labels = np.load(labels_path)
+    print("\n✅ labels loaded from disk")
+
+    return labels

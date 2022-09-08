@@ -1,8 +1,8 @@
 from tokenize import String
-from whats_for_dinner.ml_logic.preprocessor_01 import create_processed_images_df, create_processed_images_df_eval, create_images_df
-from whats_for_dinner.ml_logic.params_01 import LOCAL_DATA_PATH
-from whats_for_dinner.ml_logic.model_basic_01 import initialize_model, compile_model, train_model, evaluate_model
-from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version
+from whats_for_dinner.ml_logic.preprocessor import create_processed_images_df, create_processed_images_df_eval, create_images_df, create_pred_images_df, create_processed_images_df_pred
+from whats_for_dinner.ml_logic.params import LOCAL_DATA_PATH
+from whats_for_dinner.ml_logic.model_basic import initialize_model, compile_model, train_model, evaluate_model
+from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version, save_labels, load_labels
 
 from colorama import Fore, Style
 
@@ -27,6 +27,8 @@ def preprocess_and_train():
 
     # Create DataFrameIterator's for train, val and test
     train_images, val_images, test_images = create_processed_images_df(train_df, val_df, test_df)
+    labels = (train_images.class_indices)
+    save_labels(labels)
 
     # start the model
 
@@ -36,7 +38,7 @@ def preprocess_and_train():
     learning_rate = 0.0001
     patience = 5
     batch_size = 32
-    epochs = 50
+    epochs = 100
 
     model = compile_model(model, learning_rate)
     model, history = train_model(model, train_images, val_images, patience, batch_size, epochs)
@@ -94,7 +96,7 @@ def evaluate():
     return metrics_accuracy
 
 
-def pred(X_pred):
+def pred(pred_folder_path):
     """
     Make a prediction using the latest trained model
     """
@@ -103,16 +105,29 @@ def pred(X_pred):
 
     # from taxifare.ml_logic.registry import load_model
 
-    if X_pred is None:
+    if pred_folder_path is None:
 
-        pass
+        pred_folder_path = '../raw_data/fruits_and_vegetables_image_recognition_dataset/pred'
+
+    pred_df = create_pred_images_df(pred_folder_path)
+    pred_images = create_processed_images_df_pred(pred_df)
+
+    labels = load_labels()
+    labels = dict((v,k) for k,v in labels.items())
 
     model = load_model()
 
-    X_processed = preprocess_features(X_pred)
+    predicted_probabilities = model.predict(pred_images)
+    predicted_probabilities = np.argmax(predicted_probabilities,axis=1)
 
-    y_pred = model.predict(X_processed)
+    y_pred = [labels[k] for k in predicted_probabilities]
 
     print("\n✅ prediction done: ", y_pred, y_pred.shape)
 
     return y_pred
+
+
+if __name__ == '__main__':
+    preprocess_and_train()
+    # pred()
+    # evaluate()
