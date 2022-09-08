@@ -34,6 +34,8 @@ def initialize_model(train_df) -> Model:
     model.add(layers.Dense(256, activation='relu'))
     model.add(layers.Dense(len(train_df.Label.unique()), activation='softmax'))
 
+    print("\n✅ model initialized")
+
     return model
 
 def compile_model(model: Model, learning_rate: float) -> Model:
@@ -42,6 +44,8 @@ def compile_model(model: Model, learning_rate: float) -> Model:
     model.compile(loss='categorical_crossentropy',
                   optimizer=opt,
                   metrics=['accuracy'])
+
+    print("\n✅ model compiled")
 
     return model
 
@@ -58,11 +62,13 @@ def train_model(model, train_images, val_images, patience, batch_size, epochs) -
                                 batch_size = batch_size,
                                 epochs = epochs,
                                 callbacks=[es])
+
+    print(f"\n✅ model trained")
+
     return model, history
 
 def evaluate_model(model: Model,
-                   eval_images,
-                   batch_size=64) -> Tuple[Model, dict]:
+                   eval_images) -> Tuple[Model, dict]:
     """
     Evaluate trained model performance on dataset
     """
@@ -73,15 +79,11 @@ def evaluate_model(model: Model,
         print(f"\n❌ no model to evaluate")
         return None
 
-    metrics = model.evaluate(
-        eval_images,
-        batch_size=batch_size,
-        verbose=1,
-        # callbacks=None,
-        return_dict=True)
+    metrics = model.evaluate(eval_images)
+    print("Model evaluated")
 
-    loss = metrics["categorical_crossentropy"]
-    accuracy = metrics["accuracy"]
+    loss = metrics[0]
+    accuracy = metrics[1]
 
     print(f"\n✅ model evaluated: loss {round(loss, 2)} accuracy {round(accuracy, 2)}")
 
