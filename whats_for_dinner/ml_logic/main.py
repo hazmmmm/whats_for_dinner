@@ -3,7 +3,7 @@ from whats_for_dinner.ml_logic.preprocessor import create_processed_images_df, c
 from whats_for_dinner.ml_logic.params import LOCAL_DATA_PATH
 from whats_for_dinner.ml_logic.model_basic import initialize_model, compile_model, train_model, evaluate_model
 from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version, save_labels, load_labels
-
+from whats_for_dinner.data.data import score_recipes
 from colorama import Fore, Style
 
 import os
@@ -141,7 +141,12 @@ def pred(pred_folder_path = None):
     return y_pred
 
 
+def whats_for_diner():
+    food_output = print(score_recipes(user_input=pred(),best_num=(int(input("How many recipes you want? ")))))
+    return food_output
+
 if __name__ == '__main__':
-    # preprocess_and_train()
-    # evaluate()
+    #preprocess_and_train()
+    #evaluate()
     pred()
+    whats_for_diner()
