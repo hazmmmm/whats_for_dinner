@@ -17,31 +17,23 @@ print(f"\n✅ tensorflow loaded ({round(end - start, 2)} secs)")
 def initialize_model(train_df) -> Model:
 
     model = VGG16(weights="imagenet", include_top=False, input_shape=(224,224,3))
-    #model.add(Rescaling(1./255, input_shape=(224,224,3))) do we need this Hazm?
+    #model.add(Rescaling(1./255, input_shape=(224,224,3)))
 
     # Set the first layers to be untrainable
     model.trainable = False
 
-    print("\n✅ model initialized")
-
-    return model
-
-def add_last_layers(model):
     '''Take a pre-trained model, set its parameters as non-trainable, and add additional trainable layers on top'''
-
-    base_model = set_nontrainable_layers(model)
     flatten_layer = layers.Flatten()
     dense_layer = layers.Dense(500, activation='relu')
     prediction_layer = layers.Dense(36, activation='softmax')
 
-
     model = models.Sequential([
-        base_model,
+        model,
         flatten_layer,
         dense_layer,
         prediction_layer
     ])
-    print("\n✅ model with added last layers")
+    print("\n✅ model initialized with added last layers")
 
     return model
 
