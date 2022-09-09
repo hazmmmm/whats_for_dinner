@@ -25,7 +25,7 @@ def create_images_df(folder_path):
     # Create a list with the filepaths for training and testing
     # train_dir = Path('../raw_data/fruits_and_vegetables_image_recognition_dataset/train')
     dir = Path(folder_path)
-    filepaths = list(dir.glob(r'**/*.jpg'))
+    filepaths = list(dir.glob(r'**/*.jpg')) + list(dir.glob(r'**/*.jpeg')) + list(dir.glob(r'**/*.png'))
     df = proc_img(filepaths)
 
     return df
@@ -33,7 +33,7 @@ def create_images_df(folder_path):
 def create_pred_images_df(pred_folder_path):
     # Create a list with the filepaths for prediction
     pred_dir = Path(pred_folder_path)
-    pred_filepaths = list(pred_dir.glob(r'*.jpg'))
+    pred_filepaths = list(pred_dir.glob(r'*.jpg')) + list(pred_dir.glob(r'**/*.jpeg')) + list(pred_dir.glob(r'**/*.png'))
     pred_df = proc_img(pred_filepaths)
 
     return pred_df

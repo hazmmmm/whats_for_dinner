@@ -9,8 +9,10 @@ import os
 #recipes_df = pd.read_csv(os.path.join(csv_path, 'recipes.csv'))
 
 
-csv_path2 = os.path.join('raw_data')
-recipes_cleaned = pd.read_csv('/home/clara/code/hazmmmm/whats_for_dinner/raw_data/recipes_cleaned.csv')
+csv_path2 = os.path.join(os.path.expanduser(os.environ.get("LOCAL_DATA_PATH")),'recipes_cleaned.csv')
+
+
+recipes_cleaned = pd.read_csv(csv_path2)
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -116,11 +118,11 @@ food_label = {
     25: "pineapple",
     26: "pomegranate",
     27: "potato",
-    28: "raddish",
+    28: "radish",
     29: "soy beans",
     30: "spinach",
     31: "sweetcorn",
-    32: "sweetpotato",
+    32: "sweet potato",
     33: "tomato",
     34: "turnip",
     35: "watermelon",
