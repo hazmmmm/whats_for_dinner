@@ -84,7 +84,7 @@ def score_recipes(user_input, best_num):
 
     df['score'] = df['RecipeIngredientParts'].apply(lambda x: score(x))
     df = df.sort_values(by=['score','AggregatedRating'], ascending=[False,False]).iloc[:best_num]
-    return df
+    return df[['Name','AggregatedRating']]
 
 
 
