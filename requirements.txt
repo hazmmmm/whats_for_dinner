@@ -31,12 +31,3 @@ memoized-property
 termcolor
 
 # additions
-colorama
-ipython
-keras==2.80
-Keras-Preprocessing==1.1.2
-mlflow
-tokenize
-typing_extensions
-pathspec
-pathtools
