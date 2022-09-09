@@ -7,7 +7,6 @@ wheel>=0.29
 # data science
 numpy
 pandas
-scikit-learn
 
 # tests/linter
 black
@@ -15,15 +14,29 @@ coverage
 flake8
 pytest
 yapf
+httpx
+pytest-asyncio
 
 # API
 gcsfs
 google-cloud-storage
-mlflow
-s3fs
+fastapi
+pytz
+uvicorn
 
 # utilities
 six>=1.14
 joblib
 memoized-property
 termcolor
+
+# additions
+colorama
+ipython
+keras==2.80
+Keras-Preprocessing==1.1.2
+mlflow
+tokenize
+typing_extensions
+pathspec
+pathtools
