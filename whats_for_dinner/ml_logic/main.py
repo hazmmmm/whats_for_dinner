@@ -1,12 +1,13 @@
 from tokenize import String
 from keras.applications.vgg16 import preprocess_input
-from keras.utils.image_utils import img_to_array, load_img
+# from keras.utils.image_utils import img_to_array, load_img
+from tensorflow.keras.preprocessing.image import img_to_array, load_img
 from whats_for_dinner.ml_logic.preprocessor import create_processed_images_df, create_processed_images_df_eval, create_images_df, create_pred_images_df, create_processed_images_df_pred, proc_img
 from whats_for_dinner.ml_logic.params import LOCAL_DATA_PATH
 # from whats_for_dinner.ml_logic.model_basic import initialize_model, compile_model, train_model, evaluate_model
 from whats_for_dinner.ml_logic.model_vgg16 import initialize_model, compile_model, train_model, evaluate_model
 from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version, save_labels, load_labels
-from whats_for_dinner.data.data import score_recipes
+# from whats_for_dinner.data.data import score_recipes
 
 from colorama import Fore, Style
 
@@ -145,23 +146,24 @@ def pred(pred_folder_path = None):
     return y_pred
 
 def pred_streamlit(user_input):
-    '''
-    pred_df = proc_img(list(user_input))
-    pred_img_generator = tf.keras.preprocessing.image.ImageDataGenerator(
-    preprocessing_function=tf.keras.applications.mobilenet_v2.preprocess_input
-)
 
-    pred_images = pred_img_generator.flow_from_dataframe(
-        dataframe=pred_df,
-        x_col='Filepath',
-        y_col='Label',
-        target_size=(224, 224),
-        color_mode='rgb',
-        class_mode='categorical',
-        batch_size=32,
-        shuffle=False
-    )
-    '''
+    # pred_df = proc_img(list(user_input))
+    # pred_img_generator = tf.keras.preprocessing.image.ImageDataGenerator(
+    # preprocessing_function=tf.keras.applications.mobilenet_v2.preprocess_input
+    # )
+
+    # pred_images = pred_img_generator.flow_from_dataframe(
+    #     dataframe=pred_df,
+    #     x_col='Filepath',
+    #     y_col='Label',
+    #     target_size=(224, 224),
+    #     color_mode='rgb',
+    #     class_mode='categorical',
+    #     batch_size=32,
+    #     shuffle=False
+    # )
+    # # pred images is the input to the .predict method when using a filepath as initial user input
+
     image = load_img(user_input, target_size=(224, 224))
 
     # convert the image pixels to a numpy array
@@ -192,7 +194,7 @@ def recipe_pull():
     return food_output
 
 if __name__ == '__main__':
-    preprocess_and_train()
-    evaluate()
+    # preprocess_and_train()
+    # evaluate()
     pred()
-    recipe_pull()
+    # recipe_pull()

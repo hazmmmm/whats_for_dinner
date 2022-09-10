@@ -1,15 +1,17 @@
-FROM tensorflow/tensorflow:2.9.1
+# FROM tensorflow/tensorflow:2.9.1
+FROM armswdev/tensorflow-arm-neoverse-n1:r21.12-tf-2.7.0-eigen
 
 WORKDIR /prod
 
-COPY whats_for_dinner /whats_for_dinner
+COPY whats_for_dinner whats_for_dinner
 # We strip the requirements from useless packages like `ipykernel`, `matplotlib` etc...
 
-COPY requirements.txt /requirements.txt
+COPY requirements.txt requirements.txt
+COPY setup.py setup.py
 
-RUN pip freeze > requirements.txt
+# RUN pip freeze > requirements.txt
 
-# RUN install -r requirements.txt
+RUN pip install -r requirements.txt
 
 
 # Copy .env with DATA_SOURCE=local and MODEL_TARGET=mlflow
