@@ -8,7 +8,6 @@ from whats_for_dinner.ml_logic.params import LOCAL_DATA_PATH
 from whats_for_dinner.ml_logic.model_vgg16 import initialize_model, compile_model, train_model, evaluate_model
 from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version, save_labels, load_labels
 # from whats_for_dinner.data.data import score_recipes
-from PIL import Image
 
 from colorama import Fore, Style
 
@@ -199,6 +198,34 @@ def pred_streamlit(user_input):
     pred = [labels[k] for k in predicted_probabilities]
 
     return pred
+
+# def pred_docker(user_input):
+#     image = Image.open(user_input)
+
+#     image = image.resize((224, 224))
+
+#     # convert the image pixels to a numpy array
+#     image = img_to_array(image)
+
+#     # reshape data for the model
+#     image = image.reshape((1,224,224,3))
+
+
+#     # prepare the image for the VGG model
+#     image = preprocess_input(image)
+
+
+#     #predict me!
+#     model = load_model()
+#     result = model.predict(image)
+#     predicted_probabilities = np.argmax(result,axis=1)
+#     labels = load_labels()
+#     labels = dict(enumerate(labels.flatten()))
+#     labels = labels[0]
+
+#     pred = [labels[k] for k in predicted_probabilities]
+
+#     return pred
 
 def recipe_pull():
     food_output = print(score_recipes(user_input=pred(),best_num=(int(input("How many recipes do you want? ")))))

@@ -1,14 +1,18 @@
 from datetime import datetime
 import pytz
 import pandas as pd
+import io
+import sys
 
 from whats_for_dinner.ml_logic.registry import load_model
-from whats_for_dinner.ml_logic.main import pred_streamlit
+from whats_for_dinner.ml_logic.main import pred_streamlit, pred_docker
 
 # from whats_for_dinner.ml_logic.preprocessor import preprocess_features
 
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+
+from PIL import Image
 
 app = FastAPI()
 
@@ -50,8 +54,22 @@ async def receive_image(img: UploadFile=File(...)):
 
     extension = img.filename.split(".")[-1] in ("jpg", "jpeg", "png")
     if not extension:
-        return "Image must be jpg or png format!"
+        return "Image must be .jpg, .jpeg or .png format!"
 
-    prediction = pred_streamlit(await img.read())
+    # prediction = pred_streamlit(await img.read())
 
-    return prediction
+    # prediction = pred_docker(await img.read())
+
+    try:
+        contents = await img.read()
+        image = Image.open(io.BytesIO(contents)).convert('RGB')
+
+        predicted_class = pred_streamlit(image)
+
+        return predicted_class
+
+    except Exception as error:
+        e = sys.exc_info()[1]
+        raise HTTPException(status_code=500, detail=str(e))
+
+    # return prediction
