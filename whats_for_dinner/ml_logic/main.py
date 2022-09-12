@@ -8,6 +8,7 @@ from whats_for_dinner.ml_logic.params import LOCAL_DATA_PATH
 from whats_for_dinner.ml_logic.model_vgg16 import initialize_model, compile_model, train_model, evaluate_model
 from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version, save_labels, load_labels
 # from whats_for_dinner.data.data import score_recipes
+from PIL import Image
 
 from colorama import Fore, Style
 
@@ -103,7 +104,7 @@ def evaluate():
     return metrics_accuracy
 
 
-def pred(pred_folder_path = None):
+def pred(user_input = None):
     """
     Make a prediction using the latest trained model
     """
@@ -112,12 +113,22 @@ def pred(pred_folder_path = None):
 
     # from taxifare.ml_logic.registry import load_model
 
-    if pred_folder_path is None:
 
-        pred_folder_path = '../../raw_data/fruits_and_vegetables_image_recognition_dataset/pred'
+    # folder path
+    if user_input is None:
 
-    pred_df = create_pred_images_df(pred_folder_path)
+        user_input = '../../raw_data/fruits_and_vegetables_image_recognition_dataset/pred'
+
+    pred_df = create_pred_images_df(user_input)
     pred_images = create_processed_images_df_pred(pred_df)
+
+
+    # # single-image path
+
+    # img = Image.open(user_input)
+    # pred_images = img.resize((224, 224))
+
+
 
     labels = load_labels()
     labels = dict(enumerate(labels.flatten()))
@@ -193,8 +204,13 @@ def recipe_pull():
     food_output = print(score_recipes(user_input=pred(),best_num=(int(input("How many recipes do you want? ")))))
     return food_output
 
+def test_docker_print():
+    print("Hello hello!")
+    return
+
 if __name__ == '__main__':
     # preprocess_and_train()
     # evaluate()
-    pred()
+    # pred()
     # recipe_pull()
+    test_docker_print()

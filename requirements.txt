@@ -25,6 +25,7 @@ fastapi
 pytz
 uvicorn
 streamlit
+python-multipart
 
 # utilities
 six>=1.14
