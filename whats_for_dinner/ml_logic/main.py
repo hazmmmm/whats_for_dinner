@@ -15,6 +15,9 @@ import os
 import numpy as np
 import pandas as pd
 
+from io import BytesIO
+from PIL import Image
+
 def preprocess_and_train():
     '''
     Preprocess the image data.
@@ -157,24 +160,12 @@ def pred(user_input = None):
 
 def pred_streamlit(user_input):
 
-    # pred_df = proc_img(list(user_input))
-    # pred_img_generator = tf.keras.preprocessing.image.ImageDataGenerator(
-    # preprocessing_function=tf.keras.applications.mobilenet_v2.preprocess_input
-    # )
+    image = Image.open(BytesIO(user_input))
 
-    # pred_images = pred_img_generator.flow_from_dataframe(
-    #     dataframe=pred_df,
-    #     x_col='Filepath',
-    #     y_col='Label',
-    #     target_size=(224, 224),
-    #     color_mode='rgb',
-    #     class_mode='categorical',
-    #     batch_size=32,
-    #     shuffle=False
-    # )
-    # # pred images is the input to the .predict method when using a filepath as initial user input
-
-    image = load_img(user_input, target_size=(224, 224))
+    # #
+    # image = load_img(image, target_size=(224, 224))
+    # image = load_img(user_input, target_size=(224, 224))
+    image = image.resize((224,224))
 
     # convert the image pixels to a numpy array
     image = img_to_array(image)
@@ -199,33 +190,6 @@ def pred_streamlit(user_input):
 
     return pred
 
-# def pred_docker(user_input):
-#     image = Image.open(user_input)
-
-#     image = image.resize((224, 224))
-
-#     # convert the image pixels to a numpy array
-#     image = img_to_array(image)
-
-#     # reshape data for the model
-#     image = image.reshape((1,224,224,3))
-
-
-#     # prepare the image for the VGG model
-#     image = preprocess_input(image)
-
-
-#     #predict me!
-#     model = load_model()
-#     result = model.predict(image)
-#     predicted_probabilities = np.argmax(result,axis=1)
-#     labels = load_labels()
-#     labels = dict(enumerate(labels.flatten()))
-#     labels = labels[0]
-
-#     pred = [labels[k] for k in predicted_probabilities]
-
-#     return pred
 
 def recipe_pull():
     food_output = print(score_recipes(user_input=pred(),best_num=(int(input("How many recipes do you want? ")))))

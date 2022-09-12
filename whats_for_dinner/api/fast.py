@@ -5,14 +5,12 @@ import io
 import sys
 
 from whats_for_dinner.ml_logic.registry import load_model
-from whats_for_dinner.ml_logic.main import pred_streamlit, pred_docker
+from whats_for_dinner.ml_logic.main import pred_streamlit
 
 # from whats_for_dinner.ml_logic.preprocessor import preprocess_features
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-
-from PIL import Image
 
 app = FastAPI()
 
@@ -60,16 +58,18 @@ async def receive_image(img: UploadFile=File(...)):
 
     # prediction = pred_docker(await img.read())
 
-    try:
-        contents = await img.read()
-        image = Image.open(io.BytesIO(contents)).convert('RGB')
+    # try:
+    # img = img.file.read()
+    img = img.read()
+    # image = Image.open(io.BytesIO(image)).convert('RGB')
 
-        predicted_class = pred_streamlit(image)
+    predicted_class = pred_streamlit(img)
 
-        return predicted_class
+    return predicted_class
 
-    except Exception as error:
-        e = sys.exc_info()[1]
-        raise HTTPException(status_code=500, detail=str(e))
+    # except Exception as error:
+    #     # e = sys.exc_info()[1]
+    #     # raise HTTPException(status_code=500, detail=str(e))
+    #     pass
 
     # return prediction
