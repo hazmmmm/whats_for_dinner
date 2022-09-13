@@ -211,6 +211,6 @@ def test_docker_print():
 if __name__ == '__main__':
     # preprocess_and_train()
     # evaluate()
-    pred()
-    # recipe_pull()
-    test_docker_print()
+    # pred()
+    recipe_pull()
+    # test_docker_print()
