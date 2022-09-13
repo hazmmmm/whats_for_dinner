@@ -38,9 +38,12 @@ user_input = st.file_uploader('')
 #PREDICTION
 if st.button('predict'):
     # print is visible in the server output, not in the page
-    st.image(user_input)
+    st.image(user_input) # "user_input" type is <class 'streamlit.runtime.uploaded_file_manager.UploadedFile'>
+    # print(f"user_input.read() type: {type(user_input.read())}") ## breaks the code.
+
     # pred = st.write(pred_streamlit(user_input))
-    pred = st.write(pred_streamlit(user_input.read()))
+    pred = st.write(pred_streamlit(user_input.read())) ## "pred" type is <class 'NoneType'> ?????
+    # pred = st.write(pred_streamlit(user_input.file.read()))
 
 
 else:
