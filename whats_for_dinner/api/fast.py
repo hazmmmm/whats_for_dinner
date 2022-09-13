@@ -39,6 +39,10 @@ async def receive_image(img: UploadFile=File(...)):
     """
     receive image from user
     """
+    # initial type is <class 'starlette.datastructures.UploadFile'>
+
+
+
     # #contents = await img.read()
 
     # ### put images in a folder, "folder"
@@ -57,10 +61,15 @@ async def receive_image(img: UploadFile=File(...)):
     # prediction = pred_streamlit(await img.read())
 
     # prediction = pred_docker(await img.read())
+    print(f"img (straight from initial Upload) type: {type(img)}")
 
     # try:
-    # img = img.file.read()
-    img = img.read()
+    img = img.file.read()
+    # type after img.file.read() is <class 'bytes'>
+
+    # img2 = img.read() ## results in TypeError: a bytes-like object is required, not 'coroutine' in main.py line 163
+    # type after img.file.read() is <class 'coroutine'>
+
     # image = Image.open(io.BytesIO(image)).convert('RGB')
 
     predicted_class = pred_streamlit(img)

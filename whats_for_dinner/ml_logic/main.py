@@ -7,7 +7,7 @@ from whats_for_dinner.ml_logic.params import LOCAL_DATA_PATH
 # from whats_for_dinner.ml_logic.model_basic import initialize_model, compile_model, train_model, evaluate_model
 from whats_for_dinner.ml_logic.model_vgg16 import initialize_model, compile_model, train_model, evaluate_model
 from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version, save_labels, load_labels
-# from whats_for_dinner.data.data import score_recipes
+from whats_for_dinner.data.data import score_recipes
 
 from colorama import Fore, Style
 
@@ -80,7 +80,6 @@ def evaluate():
 
     # load new data
     new_data_path = os.path.join(LOCAL_DATA_PATH, "eval")
-    #new_data =
 
     if new_data_path is None:
         print("\n✅ no data to evaluate")
@@ -101,7 +100,7 @@ def evaluate():
         context="evaluate",
         )
 
-    # save_model(params=params, metrics=dict(val_accuracy=metrics_accuracy))
+    save_model(params=params, metrics=dict(val_accuracy=metrics_accuracy))
 
     return metrics_accuracy
 
@@ -161,21 +160,29 @@ def pred(user_input = None):
 def pred_streamlit(user_input):
 
     image = Image.open(BytesIO(user_input))
+    print(f"type after Image.open: {type(image)}")
 
     # #
     # image = load_img(image, target_size=(224, 224))
     # image = load_img(user_input, target_size=(224, 224))
     image = image.resize((224,224))
+    print(f"type after resize: {type(image)}")
+
 
     # convert the image pixels to a numpy array
     image = img_to_array(image)
+    print(f"type after img_to_array: {type(image)}")
+
 
     # reshape data for the model
     image = image.reshape((1,224,224,3))
+    print(f"type after reshape: {type(image)}")
+
 
 
     # prepare the image for the VGG model
     image = preprocess_input(image)
+    print(f"type after preprocess_input: {type(image)}")
 
 
     #predict me!
@@ -195,13 +202,15 @@ def recipe_pull():
     food_output = print(score_recipes(user_input=pred(),best_num=(int(input("How many recipes do you want? ")))))
     return food_output
 
+
 def test_docker_print():
     print("Hello hello!")
     return
 
+
 if __name__ == '__main__':
     # preprocess_and_train()
     # evaluate()
-    # pred()
+    pred()
     # recipe_pull()
     test_docker_print()
