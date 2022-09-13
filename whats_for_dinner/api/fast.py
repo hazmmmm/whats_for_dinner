@@ -6,6 +6,7 @@ import sys
 
 from whats_for_dinner.ml_logic.registry import load_model
 from whats_for_dinner.ml_logic.main import pred_streamlit
+from whats_for_dinner.data.data import score_recipes
 
 # from whats_for_dinner.ml_logic.preprocessor import preprocess_features
 
@@ -35,9 +36,9 @@ def index():
 
 
 @app.post("/predict")
-async def receive_image(img: UploadFile=File(...)):
+async def classification(img: UploadFile=File(...)):
     """
-    receive image from user
+    receive image from user and return a predicted class
     """
     # initial type is <class 'starlette.datastructures.UploadFile'>
 
@@ -63,7 +64,6 @@ async def receive_image(img: UploadFile=File(...)):
     # prediction = pred_docker(await img.read())
     print(f"img (straight from initial Upload) type: {type(img)}")
 
-    # try:
     img = img.file.read()
     # type after img.file.read() is <class 'bytes'>
 
@@ -73,12 +73,15 @@ async def receive_image(img: UploadFile=File(...)):
     # image = Image.open(io.BytesIO(image)).convert('RGB')
 
     predicted_class = pred_streamlit(img)
-
+    app.state.predicted_class = predicted_class
     return predicted_class
 
-    # except Exception as error:
-    #     # e = sys.exc_info()[1]
-    #     # raise HTTPException(status_code=500, detail=str(e))
-    #     pass
 
-    # return prediction
+@app.post("/recipe_pull")
+async def recipes(recipes_num):
+    """
+    receive number of recipes desired by the user, and return
+    """
+    food_output = score_recipes(user_input=app.state.predicted_class,best_num=(int(recipes_num)))
+
+    return food_output
