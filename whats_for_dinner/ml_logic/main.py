@@ -7,13 +7,16 @@ from whats_for_dinner.ml_logic.params import LOCAL_DATA_PATH
 # from whats_for_dinner.ml_logic.model_basic import initialize_model, compile_model, train_model, evaluate_model
 from whats_for_dinner.ml_logic.model_vgg16 import initialize_model, compile_model, train_model, evaluate_model
 from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version, save_labels, load_labels
-# from whats_for_dinner.data.data import score_recipes
+from whats_for_dinner.data.data import score_recipes
 
 from colorama import Fore, Style
 
 import os
 import numpy as np
 import pandas as pd
+
+from io import BytesIO
+from PIL import Image
 
 def preprocess_and_train():
     '''
@@ -77,7 +80,6 @@ def evaluate():
 
     # load new data
     new_data_path = os.path.join(LOCAL_DATA_PATH, "eval")
-    #new_data =
 
     if new_data_path is None:
         print("\n✅ no data to evaluate")
@@ -98,12 +100,12 @@ def evaluate():
         context="evaluate",
         )
 
-    # save_model(params=params, metrics=dict(val_accuracy=metrics_accuracy))
+    save_model(params=params, metrics=dict(val_accuracy=metrics_accuracy))
 
     return metrics_accuracy
 
 
-def pred(pred_folder_path = None):
+def pred(user_input = None):
     """
     Make a prediction using the latest trained model
     """
@@ -112,12 +114,22 @@ def pred(pred_folder_path = None):
 
     # from taxifare.ml_logic.registry import load_model
 
-    if pred_folder_path is None:
 
-        pred_folder_path = '../../raw_data/fruits_and_vegetables_image_recognition_dataset/pred'
+    # folder path
+    if user_input is None:
 
-    pred_df = create_pred_images_df(pred_folder_path)
+        user_input = '../../raw_data/fruits_and_vegetables_image_recognition_dataset/pred'
+
+    pred_df = create_pred_images_df(user_input)
     pred_images = create_processed_images_df_pred(pred_df)
+
+
+    # # single-image path
+
+    # img = Image.open(user_input)
+    # pred_images = img.resize((224, 224))
+
+
 
     labels = load_labels()
     labels = dict(enumerate(labels.flatten()))
@@ -147,34 +159,30 @@ def pred(pred_folder_path = None):
 
 def pred_streamlit(user_input):
 
-    # pred_df = proc_img(list(user_input))
-    # pred_img_generator = tf.keras.preprocessing.image.ImageDataGenerator(
-    # preprocessing_function=tf.keras.applications.mobilenet_v2.preprocess_input
-    # )
+    image = Image.open(BytesIO(user_input))
+    print(f"type after Image.open: {type(image)}")
 
-    # pred_images = pred_img_generator.flow_from_dataframe(
-    #     dataframe=pred_df,
-    #     x_col='Filepath',
-    #     y_col='Label',
-    #     target_size=(224, 224),
-    #     color_mode='rgb',
-    #     class_mode='categorical',
-    #     batch_size=32,
-    #     shuffle=False
-    # )
-    # # pred images is the input to the .predict method when using a filepath as initial user input
+    # #
+    # image = load_img(image, target_size=(224, 224))
+    # image = load_img(user_input, target_size=(224, 224))
+    image = image.resize((224,224))
+    print(f"type after resize: {type(image)}")
 
-    image = load_img(user_input, target_size=(224, 224))
 
     # convert the image pixels to a numpy array
     image = img_to_array(image)
+    print(f"type after img_to_array: {type(image)}")
+
 
     # reshape data for the model
     image = image.reshape((1,224,224,3))
+    print(f"type after reshape: {type(image)}")
+
 
 
     # prepare the image for the VGG model
     image = preprocess_input(image)
+    print(f"type after preprocess_input: {type(image)}")
 
 
     #predict me!
@@ -189,12 +197,20 @@ def pred_streamlit(user_input):
 
     return pred
 
+
 def recipe_pull():
     food_output = print(score_recipes(user_input=pred(),best_num=(int(input("How many recipes do you want? ")))))
     return food_output
 
+
+def test_docker_print():
+    print("Hello hello!")
+    return
+
+
 if __name__ == '__main__':
     # preprocess_and_train()
     # evaluate()
-    pred()
-    # recipe_pull()
+    # pred()
+    recipe_pull()
+    # test_docker_print()

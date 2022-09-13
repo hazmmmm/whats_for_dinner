@@ -1,13 +1,15 @@
 from datetime import datetime
 import pytz
 import pandas as pd
+import io
+import sys
 
 from whats_for_dinner.ml_logic.registry import load_model
-from whats_for_dinner.ml_logic.main import pred
+from whats_for_dinner.ml_logic.main import pred_streamlit
 
 # from whats_for_dinner.ml_logic.preprocessor import preprocess_features
 
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -32,15 +34,51 @@ def index():
     return {"status": "OK"}
 
 
-@app.get("/upload_image")
+@app.post("/predict")
 async def receive_image(img: UploadFile=File(...)):
     """
     receive image from user
     """
-    #contents = await img.read()
+    # initial type is <class 'starlette.datastructures.UploadFile'>
 
-    ### put images in a folder, "folder"
-    folder = ""
-    y_pred = pred(folder)
 
-    return y_pred
+
+    # #contents = await img.read()
+
+    # ### put images in a folder, "folder"
+    # folder = ""
+    # y_pred = pred(folder)
+    # img = img.file.read()
+
+    # predicted_class = pred_streamlit(img)
+
+    # return predicted_class
+
+    extension = img.filename.split(".")[-1] in ("jpg", "jpeg", "png")
+    if not extension:
+        return "Image must be .jpg, .jpeg or .png format!"
+
+    # prediction = pred_streamlit(await img.read())
+
+    # prediction = pred_docker(await img.read())
+    print(f"img (straight from initial Upload) type: {type(img)}")
+
+    # try:
+    img = img.file.read()
+    # type after img.file.read() is <class 'bytes'>
+
+    # img2 = img.read() ## results in TypeError: a bytes-like object is required, not 'coroutine' in main.py line 163
+    # type after img.file.read() is <class 'coroutine'>
+
+    # image = Image.open(io.BytesIO(image)).convert('RGB')
+
+    predicted_class = pred_streamlit(img)
+
+    return predicted_class
+
+    # except Exception as error:
+    #     # e = sys.exc_info()[1]
+    #     # raise HTTPException(status_code=500, detail=str(e))
+    #     pass
+
+    # return prediction
