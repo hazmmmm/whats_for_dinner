@@ -11,9 +11,15 @@ COPY requirements.txt requirements.txt
 COPY setup.py setup.py
 
 # RUN pip freeze > requirements.txt
-RUN pip install tensorflow-aarch64 -f https://tf.kmtea.eu/whl/stable.html
-RUN pip install -r requirements.txt
 
+## for Macbook
+# RUN pip install tensorflow-aarch64 -f https://tf.kmtea.eu/whl/stable.html
+
+
+## for non-Macbook
+RUN pip install tensorflow
+
+RUN pip install .
 
 # Copy .env with DATA_SOURCE=local and MODEL_TARGET=mlflow
 COPY .env .env

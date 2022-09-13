@@ -13,5 +13,4 @@ setup(name='whats_for_dinner',
       test_suite='tests',
       # include_package_data: to install data from MANIFEST.in
       include_package_data=True,
-      scripts=['scripts/whats_for_dinner-run'],
       zip_safe=False)

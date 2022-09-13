@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
+from whats_for_dinner.ml_logic.params import RUN_TYPE
 
 
 #TO UPDATE url = 'https://sample.com/file.csv'
@@ -8,8 +9,10 @@ import os
 #csv_path = os.path.join('raw_data','food_dot_com')
 #recipes_df = pd.read_csv(os.path.join(csv_path, 'recipes.csv'))
 
-
-csv_path2 = os.path.join(os.path.expanduser(os.environ.get("LOCAL_DATA_PATH")),'recipes_cleaned.csv')
+if RUN_TYPE == 'local':
+    csv_path2 = os.path.join(os.path.expanduser(os.environ.get("LOCAL_DATA_PATH")),'recipes_cleaned.csv')
+if RUN_TYPE == 'docker':
+    csv_path2 = ('whats_for_dinner/data/recipes_cleaned.csv')
 
 
 recipes_cleaned = pd.read_csv(csv_path2)
