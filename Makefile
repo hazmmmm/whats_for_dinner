@@ -53,3 +53,11 @@ pypi_test:
 
 pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
+
+#-----------------------
+#			ADDED W/ ARNAUD & NINA
+#---------------------
+
+
+run_api_local:
+	uvicorn whats_for_dinner.api.fast:app --reload --port 8001

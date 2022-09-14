@@ -66,11 +66,3 @@ if st.button('Show me the best recipes'):
 
 else:
     st.write('click me :spaghetti:')
-
-# NUMBER OF RECIPES
-if st.button("Show me the best recipes"):
-
-     food_output = st.write(score_recipes(pred_streamlit(user_input), best_num))
-
-else:
-    st.write("click me :spaghetti:")
