@@ -9,6 +9,7 @@ from whats_for_dinner.ml_logic.params import RUN_TYPE
 #csv_path = os.path.join('raw_data','food_dot_com')
 #recipes_df = pd.read_csv(os.path.join(csv_path, 'recipes.csv'))
 
+
 if RUN_TYPE == 'local':
     csv_path2 = os.path.join(os.path.expanduser(os.environ.get("LOCAL_DATA_PATH")),'recipes_cleaned.csv')
 if RUN_TYPE == 'docker':
@@ -16,6 +17,7 @@ if RUN_TYPE == 'docker':
 
 
 recipes_cleaned = pd.read_csv(csv_path2)
+
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -67,29 +69,73 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     return recipes_cleaned
 
 
-def score_recipes(user_input, best_num):
+def score_recipes(user_input=input("What should it include? "),
+best_num=(int(input("How many recipes you want? "))),
+more_filters=input("Did you want more filters? Y | N: ")):
     '''
     user_input: list of strings
     df: our list of recipes
     best_num: number of best matching result to return
+    more_filter: ask user if he want to have more filters
     '''
-
-
-
     df = recipes_cleaned
 
-    def score(ingredient_list):#the score will provide the best related recipes
+    def time_converter(x):
+        if "0S" in x:
+            return 0
+
+        if "H" in x:
+            one = x.replace("H", " * 60 + ")
+            two = one.replace("M", "")
+            if two[-2:] == "+ ":
+                two = two.replace("+ ", "")
+            three = str(eval(two))
+
+            return three
+
+        return x.replace("M", "")
+
+
+    if more_filters.lower() == "y" or "yes":
+        print("🚀 Adding more filters")
+        filters = input("Choose filters you want to use: ReviewCount, TotalTime(number must be in minutes), Calories (sign and number: > or <, use a comma between filters): ").split(",")
+
+        added = "NotWork"
+        for filter in filters:
+            filter = filter.split()
+            try:
+                if filter[0].lower() == "ReviewCount".lower():
+                    df = eval(f"df[df['ReviewCount'] {filter[1]} {filter[2]}]")
+                    added = "Work"
+
+                if filter[0].lower() == "Calories".lower():
+                    df = eval(f"df[df['Calories'] {filter[1]} {filter[2]}]")
+                    added = "Work"
+
+                if filter[0].lower() == "TotalTime".lower():
+                    df[["TotalTime"]] = df[["TotalTime"]].applymap(lambda x: time_converter(x))
+                    df["TotalTime"] = pd.to_numeric(df["TotalTime"])
+                    df = eval(f"df[df['TotalTime'] {filter[1]} {filter[2]}]")
+                    df[["TotalTime"]] = df[["TotalTime"]].applymap(lambda x: str(x) + "M")
+                    added = "Work"
+
+            except:
+                print("No filters added, invalid input format.🤖")
+
+        if added == "NotWork":
+            print("No filters added, invalid input format.🤖")
+
+    def score(ingredient_list): #the score will provide the best related recipes
         score = 0
         for w in user_input:
             if w in ingredient_list:
                 score += 1
-        return score
+            return score
 
     df['score'] = df['RecipeIngredientParts'].apply(lambda x: score(x))
     df = df.sort_values(by=['score','AggregatedRating'], ascending=[False,False]).iloc[:best_num]
-    return df[['Name','AggregatedRating']]
 
-
+    return df
 
 
 food_label = {
@@ -130,16 +176,3 @@ food_label = {
     34: "turnip",
     35: "watermelon",
 }
-
-
-#print(score_recipes(user_input=food_label[4], recipes_cleaned,
-#best_num=(int(input("How many recipes you want? ")))))
-
-
-#print(score_recipes(user_input=food_label[4], df=clean_data(recipes_df),
-#best_num=(int(input("How many recipes you want? ")))))
-
-
-
-#print(score_recipes(user_input=input("What should it include? "), df=clean_data(recipes_df),
-#best_num=(int(input("How many recipes you want? ")))))

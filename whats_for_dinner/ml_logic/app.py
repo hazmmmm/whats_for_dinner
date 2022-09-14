@@ -9,7 +9,8 @@ from whats_for_dinner.ml_logic.main import pred_streamlit
 
 from PIL import Image
 
-image1 = Image.open('../../raw_data/food.jpg')
+#image1 = Image.open('../../raw_data/food.jpg')
+image1 = Image.open('raw_data/food.jpg')
 st.image(image1, caption='copyright Ibrahim Hazm', width=400)
 
 
