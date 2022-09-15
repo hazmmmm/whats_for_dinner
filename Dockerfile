@@ -3,7 +3,7 @@ FROM tensorflow/tensorflow:2.9.1
 
 
 WORKDIR /prod
-COPY whats_for_dinner whats_for_dinner
+
 # We strip the requirements from useless packages like `ipykernel`, `matplotlib` etc...
 
 COPY requirements.txt requirements.txt
@@ -19,6 +19,7 @@ RUN pip install --upgrade pip
 
 
 RUN pip install .
+COPY whats_for_dinner whats_for_dinner
 
 # Copy .env with DATA_SOURCE=local and MODEL_TARGET=mlflow
 COPY .env .env

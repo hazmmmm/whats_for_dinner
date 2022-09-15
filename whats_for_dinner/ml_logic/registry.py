@@ -61,30 +61,39 @@ def save_model(model: Model = None,
 
     # save params
     if params is not None:
+        '''
         if RUN_TYPE == 'local':
             params_path = os.path.join(LOCAL_REGISTRY_PATH, "params", timestamp + ".pickle")
         elif RUN_TYPE == 'docker':
             params_path = os.path.join("whats_for_dinner/training_outputs/params", timestamp + ".pickle")
+        '''
+        params_path = os.path.join("whats_for_dinner/training_outputs/params", timestamp + ".pickle")
         print(f"- params path: {params_path}")
         with open(params_path, "wb") as file:
             pickle.dump(params, file)
 
     # save metrics
     if metrics is not None:
+        '''
         if RUN_TYPE == 'local':
             metrics_path = os.path.join(LOCAL_REGISTRY_PATH, "metrics", timestamp + ".pickle")
         elif RUN_TYPE == 'docker':
             metrics_path = os.path.join("whats_for_dinner/training_outputs/metrics", timestamp + ".pickle")
+        '''
+        metrics_path = os.path.join("whats_for_dinner/training_outputs/metrics", timestamp + ".pickle")
         print(f"- metrics path: {metrics_path}")
         with open(metrics_path, "wb") as file:
             pickle.dump(metrics, file)
 
     # save model
     if model is not None:
+        '''
         if RUN_TYPE == 'local':
             model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp)
         elif RUN_TYPE == 'docker':
             model_path = os.path.join("whats_for_dinner/training_outputs/models", timestamp)
+        '''
+        model_path = os.path.join("whats_for_dinner/training_outputs/models", timestamp)
         print(f"- model path: {model_path}")
         model.save(model_path)
 
@@ -131,11 +140,13 @@ def load_model(save_copy_locally=False) -> Model:
     print(Fore.BLUE + "\nLoad model from local disk..." + Style.RESET_ALL)
 
     # get latest model version
+    '''
     if RUN_TYPE == 'local':    # version for local machine
         model_directory = os.path.join(LOCAL_REGISTRY_PATH, "models")
     elif RUN_TYPE == 'docker':     # version for Docker
         model_directory = "whats_for_dinner/training_outputs/models"
-
+    '''
+    model_directory = "whats_for_dinner/training_outputs/models"
     results = glob.glob(f"{model_directory}/*")
     if not results:
         return None
@@ -181,10 +192,13 @@ def get_model_version(stage="Production"):
 def save_labels(labels):
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     if labels is not None:
+        '''
         if RUN_TYPE == 'local':    # version for local machine
             labels_path = os.path.join(LOCAL_REGISTRY_PATH, "labels", timestamp)
         elif RUN_TYPE == 'docker':     # version for Docker
             labels_path = os.path.join("whats_for_dinner/training_outputs/labels", timestamp)
+        '''
+        labels_path = os.path.join("whats_for_dinner/training_outputs/labels", timestamp)
     np.save(labels_path, labels)
 
 
@@ -192,12 +206,13 @@ def load_labels():
     '''
     Get labels
     '''
-
+    '''
     if RUN_TYPE == 'local':    # version for local machine
         label_directory = os.path.join(LOCAL_REGISTRY_PATH, "labels")
     elif RUN_TYPE == 'docker':     # version for Docker
         label_directory = "whats_for_dinner/training_outputs/labels"
-
+    '''
+    label_directory = "whats_for_dinner/training_outputs/labels"
     results = glob.glob(f"{label_directory}/*")
     labels_path = sorted(results)[-1]
     print(f"- path: {labels_path}")

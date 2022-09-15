@@ -6,10 +6,15 @@ load and validate the environment variables in the `.env`
 import os
 import numpy as np
 
-
-LOCAL_DATA_PATH = os.path.join(os.path.expanduser(os.environ.get("LOCAL_DATA_PATH")),"fruits_and_vegetables_image_recognition_dataset")#test
-LOCAL_REGISTRY_PATH = os.environ.get("LOCAL_REGISTRY_PATH")
 RUN_TYPE = os.environ.get("RUN_TYPE")
+if RUN_TYPE == 'local':
+    LOCAL_DATA_PATH = os.path.join(os.environ.get("LOCAL_DATA_PATH"),"fruits_and_vegetables_image_recognition_dataset") #test
+else:
+    LOCAL_DATA_PATH = ""
+
+LOCAL_REGISTRY_PATH = os.environ.get("LOCAL_REGISTRY_PATH")
+
+
 
 # DATASET_SIZE = os.environ.get("DATASET_SIZE")
 # VALIDATION_DATASET_SIZE = os.environ.get("VALIDATION_DATASET_SIZE")

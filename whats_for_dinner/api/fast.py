@@ -85,3 +85,27 @@ async def recipes(recipes_num):
     food_output = score_recipes(user_input=app.state.predicted_class,best_num=(int(recipes_num)))
 
     return food_output
+
+
+@app.post("/predict2")
+async def classification2(img: UploadFile=File(...)):
+    """
+    receive image from user and return a predicted class
+    """
+    img = img.file.read()
+
+    # img = await img.read()
+
+    predicted_class = pred_streamlit(img)
+    app.state.predicted_class = predicted_class
+    print(predicted_class)
+    return predicted_class
+
+@app.post("/recipe_pull2")
+async def recipes2(recipes_num: int):
+    """
+    receive number of recipes desired by the user, and return
+    """
+    food_output = score_recipes(user_input=app.state.predicted_class,best_num=(int(recipes_num)))
+    print(food_output)
+    return food_output
