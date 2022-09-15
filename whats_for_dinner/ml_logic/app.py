@@ -1,11 +1,12 @@
+from warnings import filters
 import streamlit as st
 from streamlit import session_state
 import numpy as np
 import pandas as pd
 import os
 import requests
-from whats_for_dinner.data.data import score_recipes
-from whats_for_dinner.ml_logic.main import pred_streamlit
+#from whats_for_dinner.data.data import score_recipes
+#from whats_for_dinner.ml_logic.main import pred_streamlit
 
 
 from PIL import Image
@@ -19,10 +20,10 @@ subtitle = '<p style="font-family:sans-serif;color:red;font-weight:bold">Le Wago
 st.markdown(subtitle, unsafe_allow_html=True)
 
 
-#'''
+'''
 
-#TO UPDATE !! This front queries the Le Wagon [taxi fare model API](https://taxifare.lewagon.ai/predict?pickup_datetime=2012-10-06%2012:10:20&pickup_longitude=40.7614327&pickup_latitude=-73.9798156&dropoff_longitude=40.6513111&dropoff_latitude=-73.8803331&passenger_count=2)
-#'''
+ This front queries batch  #991 [what's for dinner model API](https://dinner-fua6zmtsfa-ew.a.run.app/)
+'''
 
 # RESUME
 st.header("Find recipe ideas.", anchor="1st step")
@@ -34,35 +35,44 @@ Search by the ingredients themselves by uploading a picture, then add filters li
 """
 )
 
-# UPLOAD PICTURE
 
-user_input = st.file_uploader("Upload a picture")
+## API-run case
 
-
-if 'key' not in session_state:
-    session_state.key = 0
+predict_uri = 'http://localhost:8080/predict2'
+recipes_return_uri = 'http://localhost:8080/recipe_pull2?recipes_num=5'
 
 #UPLOAD PICTURE
 st.header("Upload a picture", anchor="1st step")
-user_input = st.file_uploader('')
+img_file_buffer = st.file_uploader('')
+
+classification_result = ""
 
 #PREDICTION
-if st.button('predict'):
+load= st.checkbox('Get the ingredient!')
+if load:
     # print is visible in the server output, not in the page
-    st.image(user_input) # "user_input" type is <class 'streamlit.runtime.uploaded_file_manager.UploadedFile'>
-    # print(f"user_input.read() type: {type(user_input.read())}") ## breaks the code.
+    st.image(Image.open(img_file_buffer), width=300) # "user_input" type is <class 'streamlit.runtime.uploaded_file_manager.UploadedFile'>
+    img_bytes = img_file_buffer.getvalue()
+    response = requests.post(predict_uri, files={'img': img_bytes})
+    classification_result = response.json()
+    pred = classification_result[0]
 
-    # pred = st.write(pred_streamlit(user_input))
-    pred = st.write(pred_streamlit(user_input.read())) ## "pred" type is <class 'NoneType'> ?????
-    # pred = st.write(pred_streamlit(user_input.file.read()))
+    st.caption(f'your ingredient is: {pred}')
 
 
 
 #NUMBER OF RECIPES
 best_num = int(st.number_input('How many recipes do you want?', min_value=1, max_value=8, step=1, value=5))
-if st.button('Show me the best recipes'):
-    # print is visible in the server output, not in the page
-    food_output = st.write(score_recipes(pred_streamlit(user_input.read()),best_num))
+if st.button('Show me the best recipes!'):
+    params = dict(recipes_num=best_num)
+    response = requests.post(recipes_return_uri, params=params)
+    output=response.json()
+    food_output = output['Name']
+    for value in food_output.values():
+        st.write(value)
 
-else:
-    st.write('click me :spaghetti:')
+    #testing to display review count
+    revcount=output['ReviewCount']
+    st.write(revcount["250"])
+    #variable avec filters
+    #checkboxs -total time etc...)
