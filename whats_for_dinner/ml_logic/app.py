@@ -22,7 +22,8 @@ st.markdown(subtitle, unsafe_allow_html=True)
 
 '''
 
- This front queries batch  #991 [what's for dinner model API](https://dinner-fua6zmtsfa-ew.a.run.app/)
+ This front queries batch  #991 [what's for dinner model API](https://whatsfordinner-fua6zmtsfa-ew.a.run.app
+)
 '''
 
 # RESUME
@@ -38,8 +39,8 @@ Search by the ingredients themselves by uploading a picture, then add filters li
 
 ## API-run case
 
-predict_uri = 'http://localhost:8080/predict2'
-recipes_return_uri = 'http://localhost:8080/recipe_pull2?recipes_num=5'
+predict_uri = 'https://whatsfordinner-fua6zmtsfa-ew.a.run.app/predict2'
+recipes_return_uri = 'https://whatsfordinner-fua6zmtsfa-ew.a.run.app/recipe_pull2?recipes_num=5'
 
 #UPLOAD PICTURE
 st.header("Upload a picture", anchor="1st step")
@@ -48,8 +49,14 @@ img_file_buffer = st.file_uploader('')
 classification_result = ""
 
 #PREDICTION
-load= st.checkbox('Get the ingredient!')
-if load:
+load= st.button('Get the ingredient!')
+
+#Initialize session state
+if "load_state" not in st.session_state :
+    st.session_state.load_state = False
+
+if load or st.session_state.load_state:
+    st.session_state.load_state = True
     # print is visible in the server output, not in the page
     st.image(Image.open(img_file_buffer), width=300) # "user_input" type is <class 'streamlit.runtime.uploaded_file_manager.UploadedFile'>
     img_bytes = img_file_buffer.getvalue()

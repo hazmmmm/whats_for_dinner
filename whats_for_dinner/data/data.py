@@ -9,11 +9,13 @@ from whats_for_dinner.ml_logic.params import RUN_TYPE
 #csv_path = os.path.join('raw_data','food_dot_com')
 #recipes_df = pd.read_csv(os.path.join(csv_path, 'recipes.csv'))
 
+'''
 if RUN_TYPE == 'local':
     csv_path2 = os.path.join(os.path.expanduser(os.environ.get("LOCAL_DATA_PATH")),'recipes_cleaned.csv')
 if RUN_TYPE == 'docker':
-    csv_path2 = ('whats_for_dinner/data/recipes_cleaned.csv')
-
+    csv_path2 = ('./whats_for_dinner/data/recipes_cleaned.csv')
+'''
+csv_path2 = ('./whats_for_dinner/data/recipes_cleaned.csv')
 
 recipes_cleaned = pd.read_csv(csv_path2)
 
@@ -74,8 +76,6 @@ def score_recipes(user_input, best_num):
     best_num: number of best matching result to return
     '''
 
-
-
     df = recipes_cleaned
 
     def score(ingredient_list):#the score will provide the best related recipes
@@ -87,7 +87,8 @@ def score_recipes(user_input, best_num):
 
     df['score'] = df['RecipeIngredientParts'].apply(lambda x: score(x))
     df = df.sort_values(by=['score','AggregatedRating'], ascending=[False,False]).iloc[:best_num]
-    return df[['Name','AggregatedRating']]
+    return df[['Name','AggregatedRating','ReviewCount','Description','RecipeCategory','TotalTime','Calories']]
+    #return df[['Name","AuthorName","AggregatedRating","ReviewCount","Description","RecipeCategory","TotalTime","CookTime","PrepTime","Calories"]]
 
 
 
@@ -132,6 +133,8 @@ food_label = {
 }
 
 
+#df2=score_recipes('tomato',best_num=(int(2)))
+
 #print(score_recipes(user_input=food_label[4], recipes_cleaned,
 #best_num=(int(input("How many recipes you want? ")))))
 
@@ -141,5 +144,8 @@ food_label = {
 
 
 
-#print(score_recipes(user_input=input("What should it include? "), df=clean_data(recipes_df),
+#print(score_recipes(user_input=input("What should it include? "),
 #best_num=(int(input("How many recipes you want? ")))))
+
+#print(score_recipes('tomato',best_num=(int(2))))
+#print(df2.dtypes)
