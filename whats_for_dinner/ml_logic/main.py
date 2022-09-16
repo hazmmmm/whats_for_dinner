@@ -23,8 +23,8 @@ def preprocess_and_train():
     Preprocess the image data.
     Parameters:
     '''
-    # TO-DO!!
-    # Create two paths, using IFs. 1 for local storage and 1 for when it's in a bucket
+
+    # Get paths
     train_path = os.path.join(LOCAL_DATA_PATH, "train")
     val_path = os.path.join(LOCAL_DATA_PATH, "validation")
     test_path = os.path.join(LOCAL_DATA_PATH, "test")
@@ -39,22 +39,26 @@ def preprocess_and_train():
     labels = dict((v,k) for k,v in labels.items())
     save_labels(labels)
 
-    # start the model
+    # Start the model
 
     model = initialize_model(train_df)
 
-    # model params
+    # Model params
     learning_rate = 0.0001
     patience = 6
     batch_size = 32
     epochs = 100
     # epochs = 1
 
+    # Compile the model
     model = compile_model(model, learning_rate)
+
+    # Train the model
     model, history = train_model(model, train_images, val_images, patience, batch_size, epochs)
     metrics_accuracy = np.max(history.history['val_accuracy'])
     print(f"\n✅ trained with accuracy: {round(metrics_accuracy, 2)}")
 
+    # Save parameters
     params = dict(
         # model parameters
         learning_rate=learning_rate,
@@ -66,7 +70,7 @@ def preprocess_and_train():
         model_version=get_model_version(),
     )
 
-    # save model
+    # Save model
     save_model(model=model, params=params, metrics=dict(val_accuracy=metrics_accuracy))
 
     return metrics_accuracy
@@ -78,22 +82,25 @@ def evaluate():
 
     print("\n⭐️ use case: evaluate")
 
-    # load new data
+    # Load new data
     new_data_path = os.path.join(LOCAL_DATA_PATH, "eval")
 
     if new_data_path is None:
         print("\n✅ no data to evaluate")
         return None
 
+    # Get df and create DataFrameIterator
     eval_df = create_images_df(new_data_path)
     eval_images = create_processed_images_df_eval(eval_df)
 
+    # Load saved model
     model = load_model()
 
+    # Evaluate
     metrics = evaluate_model(model, eval_images)
     metrics_accuracy = metrics[1]
 
-    # save evaluation
+    # Save evaluation
     params = dict(
         model_version=get_model_version(),
         # package behavior

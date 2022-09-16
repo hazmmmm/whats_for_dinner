@@ -1,10 +1,12 @@
+# What's for Dinner?
+What's for Dinner is an ingredients-to-recipes recommender, which works by\
+ taking a user-submitted image, classifying it, and then looking up and returning information from a recipes dataset.
+
 # Data analysis
-- Document here the project: whats_for_dinner
-- Description: Project Description
 - Data Source:
+
 - Type of analysis:
 
-Please document the project the better you can.
 
 # Startup the project
 
