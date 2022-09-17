@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 
-from whats_for_dinner.ml_logic.registry import load_model
+from whats_for_dinner.ml_logic.registry_docker import load_model
 from whats_for_dinner.ml_logic.main import pred_streamlit
 from whats_for_dinner.data.data import score_recipes
 

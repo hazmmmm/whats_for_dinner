@@ -17,7 +17,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 from whats_for_dinner.ml_logic.preprocessor import create_processed_images_df, create_processed_images_df_eval, \
 create_images_df, create_pred_images_df, create_processed_images_df_pred, proc_img
 from whats_for_dinner.ml_logic.params import LOCAL_DATA_PATH, LEARNING_RATE, BATCH_SIZE, EPOCHS, PATIENCE
-from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version, save_labels, load_labels
+from whats_for_dinner.ml_logic.registry_docker import load_model, save_model, get_model_version, save_labels, load_labels
 from whats_for_dinner.data.data import score_recipes
 
 # Choice of model - basic conv2 model or vgg16 model
