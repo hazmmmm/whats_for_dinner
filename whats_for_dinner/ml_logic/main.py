@@ -1,19 +1,27 @@
-from tokenize import String
-from keras.applications.vgg16 import preprocess_input
-# from keras.utils.image_utils import img_to_array, load_img
-from tensorflow.keras.preprocessing.image import img_to_array, load_img
-from whats_for_dinner.ml_logic.preprocessor import create_processed_images_df, create_processed_images_df_eval, create_images_df, create_pred_images_df, create_processed_images_df_pred, proc_img
-from whats_for_dinner.ml_logic.params import LOCAL_DATA_PATH
-# from whats_for_dinner.ml_logic.model_basic import initialize_model, compile_model, train_model, evaluate_model
-from whats_for_dinner.ml_logic.model_vgg16 import initialize_model, compile_model, train_model, evaluate_model
-from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version, save_labels, load_labels
-from whats_for_dinner.data.data import score_recipes
-
-from colorama import Fore, Style
-
 import os
 import numpy as np
 import pandas as pd
+from tokenize import String
+
+from keras.applications.vgg16 import preprocess_input
+
+# # Tensorflow imports for M1 MB
+from tensorflow.keras.preprocessing.image import img_to_array, load_img
+
+# # Tensorflow imports for other
+# from keras.utils.image_utils import img_to_array, load_img
+
+# # whats_for_dinner local imports
+from whats_for_dinner.ml_logic.preprocessor import create_processed_images_df, create_processed_images_df_eval, create_images_df, create_pred_images_df, create_processed_images_df_pred, proc_img
+from whats_for_dinner.ml_logic.params import LOCAL_DATA_PATH, LEARNING_RATE, BATCH_SIZE, EPOCHS, PATIENCE
+from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version, save_labels, load_labels
+from whats_for_dinner.data.data import score_recipes
+
+# # Choice of model - basic conv2 model or vgg16 model
+# from whats_for_dinner.ml_logic.model_basic import initialize_model, compile_model, train_model, evaluate_model
+from whats_for_dinner.ml_logic.model_vgg16 import initialize_model, compile_model, train_model, evaluate_model
+
+from colorama import Fore, Style
 
 from io import BytesIO
 from PIL import Image
@@ -40,33 +48,25 @@ def preprocess_and_train():
     save_labels(labels)
 
     # Start the model
-
     model = initialize_model(train_df)
 
-    # Model params
-    learning_rate = 0.0001
-    patience = 6
-    batch_size = 32
-    epochs = 100
-    # epochs = 1
-
     # Compile the model
-    model = compile_model(model, learning_rate)
+    model = compile_model(model, LEARNING_RATE)
 
     # Train the model
-    model, history = train_model(model, train_images, val_images, patience, batch_size, epochs)
+    model, history = train_model(model, train_images, val_images, PATIENCE, BATCH_SIZE, EPOCHS)
     metrics_accuracy = np.max(history.history['val_accuracy'])
     print(f"\n✅ trained with accuracy: {round(metrics_accuracy, 2)}")
 
     # Save parameters
     params = dict(
-        # model parameters
-        learning_rate=learning_rate,
-        batch_size=batch_size,
-        patience=patience,
-        # package behavior
+        # Model parameters
+        learning_rate=LEARNING_RATE,
+        batch_size=BATCH_SIZE,
+        patience=PATIENCE,
+        # Package behavior
         context="train",
-        # data source
+        # Data source
         model_version=get_model_version(),
     )
 
@@ -107,6 +107,7 @@ def evaluate():
         context="evaluate",
         )
 
+    # Save model
     save_model(params=params, metrics=dict(val_accuracy=metrics_accuracy))
 
     return metrics_accuracy
@@ -116,11 +117,7 @@ def pred(user_input = None):
     """
     Make a prediction using the latest trained model
     """
-
     print("\n⭐️ use case: predict")
-
-    # from taxifare.ml_logic.registry import load_model
-
 
     # folder path
     if user_input is None:
@@ -166,12 +163,11 @@ def pred(user_input = None):
 
 def pred_streamlit(user_input):
 
+
     image = Image.open(BytesIO(user_input))
     print(f"type after Image.open: {type(image)}")
 
-    # #
-    # image = load_img(image, target_size=(224, 224))
-    # image = load_img(user_input, target_size=(224, 224))
+    # resize to 224 x 224
     image = image.resize((224,224))
     print(f"type after resize: {type(image)}")
 
@@ -184,7 +180,6 @@ def pred_streamlit(user_input):
     # reshape data for the model
     image = image.reshape((1,224,224,3))
     print(f"type after reshape: {type(image)}")
-
 
 
     # prepare the image for the VGG model
