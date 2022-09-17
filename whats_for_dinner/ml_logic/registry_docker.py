@@ -1,8 +1,6 @@
-from multiprocessing.pool import RUN
-from whats_for_dinner.ml_logic.params import LOCAL_REGISTRY_PATH, RUN_TYPE
-
-# import mlflow
-# from mlflow.tracking import MlflowClient
+'''
+Module for saving and loading models, params and class labels for a Docker run
+'''
 
 import glob
 import os
@@ -14,12 +12,14 @@ from colorama import Fore, Style
 
 from tensorflow.keras import Model, models
 
+from whats_for_dinner.ml_logic.params import LOCAL_REGISTRY_PATH, RUN_TYPE
+
 
 def save_model(model: Model = None,
                params: dict = None,
                metrics: dict = None) -> None:
     """
-    persist trained model, params and metrics
+    Persist trained model, params and metrics
     """
 
     timestamp = time.strftime("%Y%m%d-%H%M%S")
@@ -59,7 +59,7 @@ def save_model(model: Model = None,
 
     print(Fore.BLUE + "\nSave model to local disk..." + Style.RESET_ALL)
 
-    # save params
+    # Save params
     if params is not None:
         '''
         if RUN_TYPE == 'local':
@@ -72,7 +72,7 @@ def save_model(model: Model = None,
         with open(params_path, "wb") as file:
             pickle.dump(params, file)
 
-    # save metrics
+    # Save metrics
     if metrics is not None:
         '''
         if RUN_TYPE == 'local':
@@ -85,7 +85,7 @@ def save_model(model: Model = None,
         with open(metrics_path, "wb") as file:
             pickle.dump(metrics, file)
 
-    # save model
+    # Save model
     if model is not None:
         '''
         if RUN_TYPE == 'local':
@@ -104,7 +104,7 @@ def save_model(model: Model = None,
 
 def load_model(save_copy_locally=False) -> Model:
     """
-    load the latest saved model, return None if no model found
+    Load the latest saved model, return None if no model found
     """
     # if os.environ.get("MODEL_TARGET") == "mlflow":
     #     stage = "Production"
@@ -139,7 +139,7 @@ def load_model(save_copy_locally=False) -> Model:
 
     print(Fore.BLUE + "\nLoad model from local disk..." + Style.RESET_ALL)
 
-    # get latest model version
+    # Get latest model version
     '''
     if RUN_TYPE == 'local':    # version for local machine
         model_directory = os.path.join(LOCAL_REGISTRY_PATH, "models")
@@ -190,6 +190,9 @@ def get_model_version(stage="Production"):
     return None
 
 def save_labels(labels):
+    '''
+    Save labels to match to output classes
+    '''
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     if labels is not None:
         '''
