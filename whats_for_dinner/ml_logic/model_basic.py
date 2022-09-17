@@ -1,7 +1,7 @@
-from colorama import Fore, Style
-from typing import Tuple
-
 import time
+from typing import Tuple
+from colorama import Fore, Style
+
 print(Fore.BLUE + "\nLoading tensorflow..." + Style.RESET_ALL)
 start = time.perf_counter()
 
@@ -13,6 +13,9 @@ end = time.perf_counter()
 print(f"\n✅ tensorflow loaded ({round(end - start, 2)} secs)")
 
 def initialize_model(train_df) -> Model:
+    '''
+    Building the Conv2D model and returning a model
+    '''
 
     model = Sequential()
     model.add(Rescaling(1./255, input_shape=(224,224,3)))
@@ -39,6 +42,9 @@ def initialize_model(train_df) -> Model:
     return model
 
 def compile_model(model: Model, learning_rate: float) -> Model:
+    '''
+    Compiling the model with Adam optimizer, checking accuracy
+    '''
 
     opt = optimizers.Adam(learning_rate=learning_rate)
     model.compile(loss='categorical_crossentropy',
@@ -50,6 +56,9 @@ def compile_model(model: Model, learning_rate: float) -> Model:
     return model
 
 def train_model(model, train_images, val_images, patience, batch_size, epochs) -> Tuple[Model,dict]:
+    '''
+    Training the model
+    '''
 
     es = EarlyStopping(monitor = 'val_accuracy',
                     mode = 'max',
@@ -63,9 +72,10 @@ def train_model(model, train_images, val_images, patience, batch_size, epochs) -
                                 epochs = epochs,
                                 callbacks=[es])
 
-    print(f"\n✅ model trained")
+    print("\n✅ model trained")
 
     return model, history
+
 
 def evaluate_model(model: Model,
                    eval_images) -> Tuple[Model, dict]:
@@ -73,10 +83,10 @@ def evaluate_model(model: Model,
     Evaluate trained model performance on dataset
     """
 
-    print(Fore.BLUE + f"\nEvaluating model..." + Style.RESET_ALL)
+    print(Fore.BLUE + "\nEvaluating model..." + Style.RESET_ALL)
 
     if model is None:
-        print(f"\n❌ no model to evaluate")
+        print("\n❌ no model to evaluate")
         return None
 
     metrics = model.evaluate(eval_images)
