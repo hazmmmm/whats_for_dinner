@@ -1,30 +1,33 @@
 import os
+from io import BytesIO
 import numpy as np
-import pandas as pd
-from tokenize import String
+
+from colorama import Fore, Style
+from PIL import Image
 
 from keras.applications.vgg16 import preprocess_input
 
-# # Tensorflow imports for M1 MB
-from tensorflow.keras.preprocessing.image import img_to_array, load_img
+# Tensorflow imports for M1 MB
+from tensorflow.keras.preprocessing.image import img_to_array
 
-# # Tensorflow imports for other
+# Tensorflow imports for other
 # from keras.utils.image_utils import img_to_array, load_img
 
-# # whats_for_dinner local imports
-from whats_for_dinner.ml_logic.preprocessor import create_processed_images_df, create_processed_images_df_eval, create_images_df, create_pred_images_df, create_processed_images_df_pred, proc_img
+# whats_for_dinner local imports
+from whats_for_dinner.ml_logic.preprocessor import create_processed_images_df, create_processed_images_df_eval, \
+create_images_df, create_pred_images_df, create_processed_images_df_pred, proc_img
 from whats_for_dinner.ml_logic.params import LOCAL_DATA_PATH, LEARNING_RATE, BATCH_SIZE, EPOCHS, PATIENCE
 from whats_for_dinner.ml_logic.registry import load_model, save_model, get_model_version, save_labels, load_labels
 from whats_for_dinner.data.data import score_recipes
 
-# # Choice of model - basic conv2 model or vgg16 model
-# from whats_for_dinner.ml_logic.model_basic import initialize_model, compile_model, train_model, evaluate_model
-from whats_for_dinner.ml_logic.model_vgg16 import initialize_model, compile_model, train_model, evaluate_model
+# Choice of model - basic conv2 model or vgg16 model
+# from whats_for_dinner.ml_logic.model_basic import initialize_model, \
+    # compile_model, train_model, evaluate_model
+from whats_for_dinner.ml_logic.model_vgg16 import initialize_model, compile_model, \
+    train_model, evaluate_model
 
-from colorama import Fore, Style
 
-from io import BytesIO
-from PIL import Image
+
 
 def preprocess_and_train():
     '''
@@ -115,45 +118,37 @@ def evaluate():
 
 def pred(user_input = None):
     """
-    Make a prediction using the latest trained model
+    Make a prediction using the latest trained model, using folders as input
     """
     print("\n⭐️ use case: predict")
 
-    # folder path
+    ## Folder path
     if user_input is None:
 
         user_input = '../../raw_data/fruits_and_vegetables_image_recognition_dataset/pred'
 
+    # Get df and create DataFrameIterator
     pred_df = create_pred_images_df(user_input)
     pred_images = create_processed_images_df_pred(pred_df)
 
-
-    # # single-image path
-
-    # img = Image.open(user_input)
-    # pred_images = img.resize((224, 224))
-
-
-
+    # Load labels from trained model to match names to the output classes
     labels = load_labels()
     labels = dict(enumerate(labels.flatten()))
     labels = labels[0]
-    print("Changed labels into dict")
-    print(type(labels))
 
+    # Load model
     model = load_model()
 
+    # Get predictions
     predicted_probabilities = model.predict(pred_images)
 
-
-
     if len(predicted_probabilities) == 1:
-        print("Prediction done on one input.")
+        print(Fore.BLUE + "\nPrediction done on one input." + Style.RESET_ALL)
         predicted_probabilities = np.argmax(predicted_probabilities,axis=1)[0]
         y_pred = labels[predicted_probabilities]
         print("\n✅ prediction done: ", y_pred)
     else:
-        print(f"Prediction done on {len(predicted_probabilities)} inputs.")
+        print(Fore.BLUE + f"Prediction done on {len(predicted_probabilities)} inputs." + Style.RESET_ALL)
         predicted_probabilities = np.argmax(predicted_probabilities,axis=1)
         y_pred = [labels[k] for k in predicted_probabilities]
 
@@ -161,33 +156,31 @@ def pred(user_input = None):
 
     return y_pred
 
+
 def pred_streamlit(user_input):
-
-
+    """
+    Make a prediction using the latest trained model, using a single image as input
+    """
     image = Image.open(BytesIO(user_input))
     print(f"type after Image.open: {type(image)}")
 
-    # resize to 224 x 224
+    # Resize to 224 x 224
     image = image.resize((224,224))
     print(f"type after resize: {type(image)}")
 
-
-    # convert the image pixels to a numpy array
+    # Convert the image pixels to a numpy array
     image = img_to_array(image)
     print(f"type after img_to_array: {type(image)}")
 
-
-    # reshape data for the model
+    # Reshape data for the model
     image = image.reshape((1,224,224,3))
     print(f"type after reshape: {type(image)}")
 
-
-    # prepare the image for the VGG model
+    # Prepare the image for the VGG model
     image = preprocess_input(image)
     print(f"type after preprocess_input: {type(image)}")
 
-
-    #predict me!
+    # Run prediction
     model = load_model()
     result = model.predict(image)
     predicted_probabilities = np.argmax(result,axis=1)
@@ -195,17 +188,23 @@ def pred_streamlit(user_input):
     labels = dict(enumerate(labels.flatten()))
     labels = labels[0]
 
-    pred = [labels[k] for k in predicted_probabilities]
+    prediction = [labels[k] for k in predicted_probabilities]
 
-    return pred
+    return prediction
 
 
 def recipe_pull():
+    '''
+    Get recipes
+    '''
     food_output = print(score_recipes(user_input=pred(),best_num=(int(input("How many recipes do you want? ")))))
     return food_output
 
 
 def test_docker_print():
+    '''
+    Just a tester function
+    '''
     print("Hello hello!")
     return
 
@@ -214,5 +213,5 @@ if __name__ == '__main__':
     # preprocess_and_train()
     # evaluate()
     # pred()
-    recipe_pull()
-    # test_docker_print()
+    # recipe_pull()
+    test_docker_print()
