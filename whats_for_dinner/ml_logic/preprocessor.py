@@ -1,11 +1,16 @@
+'''
+Module for changing images (files / folders) into usable inputs for the models
+'''
+
 import tensorflow as tf
 from pathlib import Path
 import pandas as pd
 
-def proc_img(filepath):
-    """ Create a DataFrame with the filepath and the labels of the pictures
-    """
 
+def proc_img(filepath):
+    """
+    Create a DataFrame with the filepath and the labels of the pictures
+    """
     labels = [str(filepath[i]).split("/")[-2] \
             for i in range(len(filepath))]
 
@@ -22,23 +27,31 @@ def proc_img(filepath):
 
 
 def create_images_df(folder_path):
-    # Create a list with the filepaths for training and testing
-    # train_dir = Path('../raw_data/fruits_and_vegetables_image_recognition_dataset/train')
+    '''
+    Create a list with the filepaths for training and testing
+    '''
     dir = Path(folder_path)
     filepaths = list(dir.glob(r'**/*.jpg')) + list(dir.glob(r'**/*.jpeg')) + list(dir.glob(r'**/*.png'))
     df = proc_img(filepaths)
 
     return df
 
+
 def create_pred_images_df(pred_folder_path):
-    # Create a list with the filepaths for prediction
+    '''
+    Create a list with the filepaths for prediction
+    '''
     pred_dir = Path(pred_folder_path)
     pred_filepaths = list(pred_dir.glob(r'*.jpg')) + list(pred_dir.glob(r'**/*.jpeg')) + list(pred_dir.glob(r'**/*.png'))
     pred_df = proc_img(pred_filepaths)
 
     return pred_df
 
+
 def create_processed_images_df(train_df, val_df, test_df):
+    '''
+    Create ImageDataGenerators for train, val and test dfs
+    '''
     train_generator = tf.keras.preprocessing.image.ImageDataGenerator(
         preprocessing_function=tf.keras.applications.mobilenet_v2.preprocess_input
     )
@@ -98,7 +111,11 @@ def create_processed_images_df(train_df, val_df, test_df):
 
     return train_images, val_images, test_images
 
+
 def create_processed_images_df_eval(eval_df):
+    '''
+    Create ImageDataGenerators for eval df
+    '''
     eval_generator = tf.keras.preprocessing.image.ImageDataGenerator(
         preprocessing_function=tf.keras.applications.mobilenet_v2.preprocess_input
     )
@@ -114,7 +131,11 @@ def create_processed_images_df_eval(eval_df):
 )
     return eval_images
 
+
 def create_processed_images_df_pred(pred_df):
+    '''
+    Create ImageDataGenerator for prediction df
+    '''
     pred_img_generator = tf.keras.preprocessing.image.ImageDataGenerator(
         preprocessing_function=tf.keras.applications.mobilenet_v2.preprocess_input
     )
