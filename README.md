@@ -2,7 +2,25 @@
 
 What's for Dinner is an ingredients-to-recipes recommender, which works by taking a user-submitted image, classifying it, and then looking up and returning information from a recipes dataset.
 
-# Data sources
+This was created as part of the final project in a Le Wagon Data Science bootcamp, with the following contributors (listed alphabetically):
+
+- Clara Gholani
+- Ibrahim Hazm Bin Amran
+- Ido Azaria
+- Viktor Chmilenko
+
+## User Journey
+
+1. The user uploads a photgraph of a food item (fruit / vegetable for now) via a Streamlit web application hosted on Heroku
+2. The user receives the classification result
+3. The user chooses the number of recipes to briefly view
+4. The user views the titles and descriptions of recipes
+5. The user makes the final choice of recipe to fully view
+6. The user is shown a full list of ingredients and steps
+
+## High Level Architecture
+
+## Data Sources
 
 - Recipes: 500,000+ recipes from [Food.com Recipes and Reviews](https://www.kaggle.com/datasets/irkaal/foodcom-recipes-and-reviews),
 
