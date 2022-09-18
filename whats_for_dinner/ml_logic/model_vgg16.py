@@ -1,7 +1,11 @@
-from colorama import Fore, Style
-from typing import Tuple
+'''
+Module to build, train, evaluate model
+'''
 
+from typing import Tuple
 import time
+from colorama import Fore, Style
+
 print(Fore.BLUE + "\nLoading tensorflow..." + Style.RESET_ALL)
 start = time.perf_counter()
 
@@ -15,11 +19,16 @@ end = time.perf_counter()
 print(f"\n✅ tensorflow loaded ({round(end - start, 2)} secs)")
 
 def initialize_model(train_df) -> Model:
+    '''
+    Build and initialize model using a pre-trained model, set its parameters as non-trainable,
+    and add additional trainable layers on top
+    '''
     model = VGG16(weights="imagenet", include_top=False, input_shape=(224,224,3))
-    #model.add(Rescaling(1./255, input_shape=(224,224,3)))
+
     # Set the first layers to be untrainable
     model.trainable = False
-    '''Take a pre-trained model, set its parameters as non-trainable, and add additional trainable layers on top'''
+
+    # Add extra layers
     flatten_layer = layers.Flatten()
     dense_layer = layers.Dense(500, activation='relu')
     prediction_layer = layers.Dense(36, activation='softmax')
@@ -33,7 +42,9 @@ def initialize_model(train_df) -> Model:
     return model
 
 def compile_model(model: Model, learning_rate: float) -> Model:
-
+    '''
+    Compile model with Adam optimizer
+    '''
     opt = optimizers.Adam(learning_rate=learning_rate)
     model.compile(loss='categorical_crossentropy',
                   optimizer=opt,
@@ -44,7 +55,10 @@ def compile_model(model: Model, learning_rate: float) -> Model:
     return model
 
 def train_model(model, train_images, val_images, patience, batch_size, epochs) -> Tuple[Model,dict]:
-
+    '''
+    Train model using train_ and val_images
+    '''
+    # Set early stopping
     es = EarlyStopping(monitor = 'val_accuracy',
                     mode = 'max',
                     patience = patience,
@@ -57,7 +71,7 @@ def train_model(model, train_images, val_images, patience, batch_size, epochs) -
                                 epochs = epochs,
                                 callbacks=[es])
 
-    print(f"\n✅ model trained")
+    print("\n✅ model trained")
 
     return model, history
 
@@ -66,11 +80,10 @@ def evaluate_model(model: Model,
     """
     Evaluate trained model performance on dataset
     """
-
-    print(Fore.BLUE + f"\nEvaluating model..." + Style.RESET_ALL)
+    print(Fore.BLUE + "\nEvaluating model..." + Style.RESET_ALL)
 
     if model is None:
-        print(f"\n❌ no model to evaluate")
+        print("\n❌ no model to evaluate")
         return None
 
     metrics = model.evaluate(eval_images)
