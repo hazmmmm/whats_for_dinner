@@ -3,6 +3,8 @@ import pandas as pd
 import requests
 from PIL import Image
 
+
+# Define two functions used to cleanup text, preferably should be done at the data preparation stage instead
 def retrieve_instructions(cell):
     '''
     Cleans up the text in instructinos from the food df
@@ -27,6 +29,7 @@ def retrieve_ingredients(cell):
     return cell
 
 
+# Page header image and title
 image1 = Image.open('../../raw_data/food.jpg')
 st.image(image1, caption='copyright Ibrahim Hazm', width=400)
 
@@ -35,7 +38,7 @@ subtitle = '<p style="font-family:sans-serif;color:red;font-weight:bold">Le Wago
 st.markdown(subtitle, unsafe_allow_html=True)
 st.write("#")
 
-# RESUME
+# Intro
 st.header("Find recipe ideas.", anchor="1st step")
 st.markdown(
     """
@@ -55,7 +58,7 @@ recipes_return_uri = 'https://whatsfordinnernew-fua6zmtsfa-ew.a.run.app/recipe_p
 st.write("#")
 
 
-#UPLOAD PICTURE
+# Upload picture
 st.header("Take a photo of an ingredient and upload it.", anchor="1st step")
 img_file_buffer = st.file_uploader('')
 
@@ -63,6 +66,7 @@ classification_result = ""
 st.write("#####")
 
 
+# Preparing Streamlit session states
 if "button1" not in st.session_state:
     st.session_state["button1"] = False
 
@@ -73,10 +77,11 @@ if "button3" not in st.session_state:
     st.session_state["button3"] = False
 
 
-#PREDICTION
+# Predict
 if st.button('Get the ingredient!'):
     st.session_state["button1"] = not st.session_state["button1"]
 
+# First streamlit state
 if st.session_state["button1"]:
     st.image(Image.open(img_file_buffer), width=300) # "user_input" type is <class 'streamlit.runtime.uploaded_file_manager.UploadedFile'>
     img_bytes = img_file_buffer.getvalue()
@@ -90,15 +95,14 @@ if st.session_state["button1"]:
     st.header('Find a recipe.')
 
 
-    #NUMBER OF RECIPES
+    # Ask for number of recipes
     best_num = int(st.number_input('How many recipes are you looking for?', min_value=1, max_value=8, step=1))
-
-    # if st.button('Show me the best recipes!'):
 
     if st.button('Show me the best recipes!'):
         st.session_state["button2"] = not st.session_state["button2"]
 
 
+# Second streamlit state
 if st.session_state["button1"] and st.session_state["button2"]:
     params = dict(recipes_num=best_num)
     response = requests.post(recipes_return_uri, params=params, timeout=30)
@@ -115,12 +119,15 @@ if st.session_state["button1"] and st.session_state["button2"]:
         col2.write(row['Description'])
     st.write("###")
 
+    # Ask for final recipe choice
     recipe_choice = int(st.number_input('Which recipe would you like to make?', min_value=1, max_value=food_df.shape[0]+1, step=1))
 
     if st.button("Let's make it!"):
         st.session_state["button3"] = not st.session_state["button3"]
 
 
+# Third streamlit state
+# Show ingredients, instructions
 if st.session_state["button3"]:
     st.markdown(
     """
@@ -135,6 +142,8 @@ if st.session_state["button3"]:
     )
     st.write(retrieve_instructions(food_df.iloc[recipe_choice - 1]['RecipeInstructions']))
 
+
+# Leave some whitespace
 st.write("#")
 st.write("#")
 st.write("#")
@@ -143,7 +152,7 @@ st.write("#")
 st.write("#")
 st.write("#")
 
-
+# Footer
 '''
 This front-end queries the [what's for dinner API](https://dinner-fua6zmtsfa-ew.a.run.app/) built by batch #991 of the Le Wagon Data Science bootcamp.
 '''
