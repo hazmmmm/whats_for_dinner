@@ -1,3 +1,7 @@
+'''
+Module defining rudimentary Conv2D model
+'''
+
 import time
 from typing import Tuple
 from colorama import Fore, Style
@@ -59,7 +63,7 @@ def train_model(model, train_images, val_images, patience, batch_size, epochs) -
     '''
     Training the model
     '''
-
+    # Define EarlyStopping
     es = EarlyStopping(monitor = 'val_accuracy',
                     mode = 'max',
                     patience = patience,
