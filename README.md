@@ -1,13 +1,8 @@
 # What's for Dinner?
 
-What's for Dinner is an ingredients-to-recipes recommender, which works by taking a user-submitted image, classifying it, and then looking up and returning information from a recipes dataset.
+![image](https://user-images.githubusercontent.com/108480012/191253097-13373e0d-f527-444b-b85b-5c86be9299c5.png)
 
-This was created as part of the final project in a Le Wagon Data Science bootcamp, with the following contributors (listed alphabetically):
-
-- Clara Gholani
-- Ibrahim Hazm Bin Amran
-- Ido Azaria
-- Viktor Chmilenko
+What's for Dinner is an ingredients-to-recipes recommender, that works by taking a user-submitted image, classifying it, and then looking up and returning information from a recipes dataset.
 
 ## User Journey
 
@@ -20,13 +15,24 @@ This was created as part of the final project in a Le Wagon Data Science bootcam
 
 ## High Level Architecture
 
+![image](https://user-images.githubusercontent.com/108480012/191256580-d023f802-0191-4bb9-a996-3745ec7ebdcf.png)
+
 ## Data Sources
+
+![image](https://user-images.githubusercontent.com/108480012/191256267-5bd21d51-d097-4071-8c4e-792b5073678b.png)
 
 - Recipes: 500,000+ recipes from [Food.com Recipes and Reviews](https://www.kaggle.com/datasets/irkaal/foodcom-recipes-and-reviews),
 
-- Images: ~3,600 photos of fruits and vegetables (2+GB) from [Fruits and Vegetables Image Recognition Dataset](https://www.kaggle.com/datasets/kritikseth/fruit-and-vegetable-image-recognition)
+- Images: ~38.921 photos of fruits and vegetables (4.75GB) our own custom sourced image dataset augmented with images.cv and also the [Fruits and Vegetables Image Recognition Dataset](https://www.kaggle.com/datasets/kritikseth/fruit-and-vegetable-image-recognition)
 
+## Contributors
+This was created as part of the final project in Le Wagon Data Science bootcamp (batch #991), with the following contributors (listed alphabetically):
+- [Clara Gholani]()
+- [Ibrahim Hazm Bin Amran](https://github.com/hazmmmm/)
+- [Ido Azaria](https://github.com/IdoKun)
+- [Viktor Chmilenko]()
 
+![image](https://user-images.githubusercontent.com/108480012/191254761-766bfbf1-cecc-4519-b7b0-b6de66558cb0.png)
 
 # Startup the project
 
