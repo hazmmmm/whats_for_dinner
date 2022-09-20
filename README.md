@@ -30,7 +30,7 @@ This was created as part of the final project in Le Wagon Data Science bootcamp 
 - [Clara Gholani](https://github.com/Clara31100)
 - [Ibrahim Hazm Bin Amran](https://github.com/hazmmmm/)
 - [Ido Azaria](https://github.com/IdoKun)
-- [Viktor Chmilenko]()
+- [Viktor Chmilenko](https://github.com/nameFascinator)
 
 ![image](https://user-images.githubusercontent.com/108480012/191254761-766bfbf1-cecc-4519-b7b0-b6de66558cb0.png)
 
