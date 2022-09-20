@@ -1,8 +1,8 @@
 # What's for Dinner?
 
-What's for Dinner is an ingredients-to-recipes recommender, which works by taking a user-submitted image, classifying it, and then looking up and returning information from a recipes dataset.
+What's for Dinner is an ingredients-to-recipes recommender, that works by taking a user-submitted image, classifying it, and then looking up and returning information from a recipes dataset.
 
-This was created as part of the final project in a Le Wagon Data Science bootcamp, with the following contributors (listed alphabetically):
+This was created as part of the final project in Le Wagon Data Science bootcamp (batch #991), with the following contributors (listed alphabetically):
 
 - Clara Gholani
 - Ibrahim Hazm Bin Amran
@@ -24,7 +24,7 @@ This was created as part of the final project in a Le Wagon Data Science bootcam
 
 - Recipes: 500,000+ recipes from [Food.com Recipes and Reviews](https://www.kaggle.com/datasets/irkaal/foodcom-recipes-and-reviews),
 
-- Images: ~3,600 photos of fruits and vegetables (2+GB) from [Fruits and Vegetables Image Recognition Dataset](https://www.kaggle.com/datasets/kritikseth/fruit-and-vegetable-image-recognition)
+- Images: ~38.921 photos of fruits and vegetables (4.75GB) our own custom sourced image dataset augmented with images.cv and also the [Fruits and Vegetables Image Recognition Dataset](https://www.kaggle.com/datasets/kritikseth/fruit-and-vegetable-image-recognition)
 
 
 
