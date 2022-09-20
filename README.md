@@ -14,8 +14,8 @@ What's for Dinner is an ingredients-to-recipes recommender, that works by taking
 6. The user is shown a full list of ingredients and steps
 
 ## High Level Architecture
+<img width="1256" alt="Screen Shot 2022-09-20 at 21 48 17" src="https://user-images.githubusercontent.com/78719850/191281578-11b7fb72-589c-467a-970c-eb6d2e80b100.png">
 
-![image](https://user-images.githubusercontent.com/108480012/191256580-d023f802-0191-4bb9-a996-3745ec7ebdcf.png)
 
 ## Data Sources
 
