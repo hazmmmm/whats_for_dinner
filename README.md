@@ -26,6 +26,8 @@ This was created as part of the final project in a Le Wagon Data Science bootcam
 
 - Images: ~3,600 photos of fruits and vegetables (2+GB) from [Fruits and Vegetables Image Recognition Dataset](https://www.kaggle.com/datasets/kritikseth/fruit-and-vegetable-image-recognition)
 
+
+
 # Startup the project
 
 The initial setup.
@@ -65,6 +67,8 @@ mkdir tmp
 cd tmp
 whats_for_dinner-run
 ```
+
+
 
 # Install
 
