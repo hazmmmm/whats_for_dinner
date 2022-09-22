@@ -53,6 +53,26 @@ else:
 
 #NUMBER OF RECIPES
 best_num = int(st.number_input('How many recipes do you want?', min_value=1, max_value=8, step=1, value=5))
+more_filters = str(st.text_input("Did you want more filters? Y | N: "))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if st.button('Show me the best recipes'):
     # print is visible in the server output, not in the page
     food_output = st.write(score_recipes(pred_streamlit(user_input.read()),best_num))
