@@ -26,7 +26,7 @@ What's for Dinner is an ingredients-to-recipes recommender, that works by taking
 
 ## Contributors
 This was created as part of the final project in Le Wagon Data Science bootcamp (batch #991), with the following contributors (listed alphabetically):
-- [Clara Gholani](https://github.com/Clara31100)
+- [Clara Gholami](https://github.com/Clara31100)
 - [Ibrahim Hazm Bin Amran](https://github.com/hazmmmm/)
 - [Ido Azaria](https://github.com/IdoKun)
 - [Viktor Chmilenko](https://github.com/nameFascinator)
